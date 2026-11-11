@@ -5,7 +5,7 @@
   </picture>
 </p>
 
-<h1 align="center"><img src="docs/assets/mozaic_icon.png" alt="MOZAIC icon" height="40" align="absmiddle"> MOZAIC: An audio-video deepfake benchmark for telling <em>what</em> is fake</h1>
+<h1 align="center">MOZAIC: An audio-video deepfake benchmark for telling <em>what</em> is fake</h1>
 
 <p align="center">
   Shaina Raza<sup>1</sup>, Mohamed Hafez<sup>1</sup>, Ahmed Radwan<sup>1</sup>, Khalid Elgazzar<sup>2</sup>,
