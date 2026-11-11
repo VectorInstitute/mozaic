@@ -1,0 +1,65 @@
+# T4: explanation. Built on MOZAIC-Small only: every step refuses to run without --subset small.
+subset: small
+
+# Which clips go into the question files. The vocoded view: a real voice is its vocoded
+# copy only (RVRA, FVRA vocoded); a converted voice has one version (RVFA, FVFA main),
+# already vocoded inside Seed-VC. So every voice has been through a vocoder.
+arms:
+  RVRA: vocoded
+  RVFA: main
+  FVRA: vocoded
+  FVFA: main
+
+# The golden set, for human review only: drawn from test, an equal number per cell (label x
+# video generator: 8 cells), spread over length and gender, one clip per pair. size must be
+# a multiple of 8 (400: 50 per cell).
+golden:
+  split: test
+  size: 400
+  seed: 20261014
+
+# Two models write the explanation of a fake part (annotate.py), and a third rewrites it as a paragraph.
+# Real parts get a fixed sentence, no call. All go through an OpenAI-compatible endpoint (base_url):
+# Gemini's public one for the annotator, Anthropic's public one (https://api.anthropic.com/v1) for the
+# two Claude steps. Each has its own key in the .env of common/config.yaml.
+
+# The annotator: Gemini sees the clip (timed frames + sound) and explains the clip's claims (claims.py)
+# in one paragraph per fake part. It may describe the scene; it may not add a defect.
+annotator:
+  model_version: gemini-3.6-flash   # pinned name, never a -latest alias; never the evaluated Gemini
+  base_url: https://generativelanguage.googleapis.com/v1beta/openai   # Gemini's public OpenAI-compatible endpoint
+  api_key_env: GEMINI_API_KEY
+  env_file: null                    # null = env_file from common/config.yaml
+  frames: 8                         # per clip, evenly spread, each with its time printed on it
+  audio_sample_rate: 16000
+  generation:
+    max_tokens: 4096                # per call, counts thinking too (Gemini thinks by default)
+
+# The verifier: Claude, text only. Gets the claims and the annotator's sentences, never the clip, and says
+# per sentence whether it adds anything no cited claim gives. Another model, so the annotator never grades itself.
+verifier:
+  model_version: claude-sonnet-5-5  # pinned name, never a -latest alias
+  base_url: https://api.anthropic.com/v1   # Anthropic's public OpenAI-compatible endpoint
+  api_key_env: ANTHROPIC_API_KEY    # a key for the endpoint that serves Claude
+  env_file: null
+  generation:
+    max_tokens: 2048                # per call
+    extra_body:                     # high effort; thinking is on by default for Claude 5 models
+      output_config: {effort: high}
+
+# The rewriter: Claude, text only. Once per clip, after the verifier passed it: turns each part's checked
+# sentences into one paragraph written the way a person would. Code and the verifier check it against the
+# checked sentences; a clip whose rewrite fails is left out until --retry-failed asks the rewriter again.
+rewriter:
+  model_version: claude-sonnet-5-5  # pinned name, never a -latest alias
+  base_url: https://api.anthropic.com/v1   # Anthropic's public OpenAI-compatible endpoint
+  api_key_env: ANTHROPIC_API_KEY
+  env_file: null
+  generation:
+    max_tokens: 2048                # per call
+
+tries: 2                            # rounds per clip of annotator -> checks -> verifier (at most 2 Gemini calls)
+rewrite_tries: 3                    # failed rewrites of the same sentences before --retry-failed asks the annotator again
+retry:
+  max_attempts: 3                   # per call, with backoff
+stop_after_failures: 3              # clips in a row whose call failed before the run stops

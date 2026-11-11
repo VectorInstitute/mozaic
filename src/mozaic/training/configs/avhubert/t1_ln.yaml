@@ -1,0 +1,47 @@
+model: avhubert
+task: t1
+experiment_name: ln_mean_mlp        # training/avhubert/ln_mean_mlp/t1/; change it when a setting changes
+
+questions:                          # the same filters as evaluation (configs/gemini_3_8_flash.yaml)
+  train:
+    file: t1_train.jsonl
+    filters:
+      arms: [vocoded]               # real-voice clips only; fake-voice clips have one arm and are always kept
+      # frames: [77]                # not used: both lengths kept (77, 153)
+      # labels: [RVRA, FVRA]        # not used: all labels kept (RVRA, RVFA, FVRA, FVFA)
+      # video_methods: [s2v]        # not used: all kept (real, facefusion, s2v, animate)
+  val:
+    file: t1_val.jsonl
+    filters:
+      arms: [vocoded]               # real-voice clips only; fake-voice clips have one arm and are always kept
+      # frames: [77]                # not used: both lengths kept (77, 153)
+      # labels: [RVRA, FVRA]        # not used: all labels kept (RVRA, RVFA, FVRA, FVFA)
+      # video_methods: [s2v]        # not used: all kept (real, facefusion, s2v, animate)
+
+frames: 32                          # as every evaluated model: evenly spaced, full frame
+audio_sample_rate: 16000            # the complete audio
+
+backbone:
+  checkpoint: models_weights/avhubert/large_vox_iter5.pt
+  code: external-repos/av_hubert             # the authors' repo: avhubert/ and their fairseq fork
+
+head: {type: mlp, dropout: 0.1}
+tuning: {mode: layernorm}           # frozen | layernorm | full
+
+train:
+  epochs: 10
+  lr: 1.0e-4
+  weight_decay: 0.01
+  batch_size: 32                    # per optimizer step, over all GPUs
+  micro_batch_size: 8               # per GPU per forward; memory only
+  workers: 8                        # per GPU
+  seed: 0
+  amp: bf16
+  class_weights: balanced
+  select_on: macro.f1
+  log_every: 50
+
+log:
+  wandb: true
+  project: mozaic
+  entity: null                      # W&B team or user; null: the logged-in account's default

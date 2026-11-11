@@ -1,0 +1,6 @@
+# Packages for the CPU steps of data generation (the repo's own venv). Also needs ffmpeg 4.4 on PATH.
+numpy==2.4.6
+opencv-python==4.13.0.92
+pandas==3.0.3
+pyarrow==24.0.0
+pyyaml==6.0.3

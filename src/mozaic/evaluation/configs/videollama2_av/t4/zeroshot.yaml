@@ -1,0 +1,29 @@
+# videollama2_av/t1/zeroshot.yaml for T4, zero-shot: its input unchanged; a T4-length answer
+model: videollama2_av               # code in models/mllms/videollama2_av, results in results/videollama2_av
+family: mllm                        # mllm (answers in text) or classifier (class probabilities)
+model_version: DAMO-NLP-SG/VideoLLaMA2.1-7B-AV
+weights: models_weights/videollama2.1-7b-av   # our copy, HF revision d944d429, read only
+vision_tower: models_weights/siglip-so400m-patch14-384   # its picture encoder, google/siglip-so400m-patch14-384, HF revision 9fdffc58
+code: external-repos/videollama2      # the authors' code, git-ignored: github DAMO-NLP-SG/VideoLLaMA2, branch audio_visual, 8cedfbd
+
+experiment_name: zeroshot_32f_224_nopad   # results go to {experiment_name}_{split}: the run in the paper's T4
+
+# The input: run_inference reads each clip as for every model; the model turns it into VideoLLaMA2's input with the
+# authors' own steps.
+frames: 32                          # per clip, evenly spaced (VideoLLaMA2's default is 8; 32 as every model)
+audio_sample_rate: 16000            # as every config; VideoLLaMA2 hears sound at 16 kHz
+# Frame size: we send the clips' own 224 x 224 frames; its picture encoder (SigLIP) enlarges them to 384 x 384. t1 sends
+# each clip's frames with its sound, as one video with its soundtrack; t2 and t3's face questions send silent videos,
+# t3's voice questions the two sounds.
+soundtrack: nopad                   # only the clip's own sound, no silence, no repeats, as T1 (videollama2_av/t1/zeroshot.yaml)
+
+generation:                         # transformers' generate(), as the authors' mm_infer calls it
+  do_sample: false                  # greedy, as every model on T1-T3
+  max_new_tokens: 8192              # T4's limit (evaluation/README.md, Generation); T1-T3: 256
+  repetition_penalty: 1.0           # off, as every model answers (the checkpoint's generation_config.json says 1.05)
+
+stop_after_failures: 3              # failed questions in a row before the run stops
+
+tasks:                              # T4 on MOZAIC-Small's test split
+  t4:
+    file: t4_{split}.jsonl          # results in {experiment_name}_test, as T1-T3; --subset small only (T4 exists on Small only); never t4_golden.jsonl

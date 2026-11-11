@@ -1,0 +1,7 @@
+# uv venv .venv_pe_av --python 3.11
+# uv pip install --python .venv_pe_av/bin/python torch==2.6.0 torchaudio==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cu124
+# uv pip install --python .venv_pe_av/bin/python -r src/mozaic/training/classifiers/pe_av/requirements.txt -e .
+transformers==5.19.0                # PeAudioVideoModel
+timm==1.0.30                        # PE-L, the frame encoder (vit_pe_core_large_patch14_336)
+wandb
+pytest

@@ -1,0 +1,50 @@
+model: qwen3_omni
+task: t4
+experiment_name: lora_attn_32f_224  # training_small/qwen3_omni/lora_attn_32f_224/t4/; change it when a setting changes
+weights: models_weights/Qwen3-Omni-30B-A3B-Instruct   # the copy evaluation uses, read only
+base_template: qwen3_omni_nothink   # LLaMA-Factory's: the prompt evaluation sends, ending at "assistant\n", no <think>
+
+questions:                          # T4 exists on MOZAIC-Small only: --subset small
+  train:
+    file: t4_train.jsonl
+    # filters:                      # not used: all T4 questions kept
+  val:
+    file: t4_val.jsonl
+
+eval_config: qwen3_omni_vllm/t4/lora_trainsmall   # evaluation/configs: its generation (greedy, 8192 tokens) for validation
+
+# The input, as evaluation's qwen3_omni_vllm/t1/zeroshot.yaml (qwen_omni_inputs.py reads clips with its reader)
+frames: 32                          # evenly spaced, full frame
+frame_size: 224                     # the clips' own 224 x 224
+audio_sample_rate: 16000            # the complete audio, inside the video (use_audio_in_video)
+
+train:                              # the protocol's recipe, as the classifiers, but 3 epochs
+  epochs: 3                         # LoRA SFT of an LLM: a few epochs (Skyra: 5), each validated
+  lr: 1.0e-4
+  weight_decay: 0.01                # AdamW, no schedule
+  batch_size: 32                    # per optimizer step, over all GPUs
+  micro_batch_size: 1               # per GPU per forward; memory only
+  workers: 5                        # per GPU: A100 nodes have 24 CPUs
+  seed: 0
+  val_questions: 200                # balanced per class, not all 1,332: its validation answers are slow
+  val_max_new_tokens: 1024          # validation only: a runaway reply would take minutes; the test run keeps 8,192
+  select_on: text.both.rouge_l      # t4_metrics' ROUGE-L of both parts: no judge call per epoch
+
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target: q_proj,k_proj,v_proj,o_proj   # the attention layers: all would also wrap 18,432 expert layers (845M vs 13M parameters)
+
+llamafactory:                       # passed to LLaMA-Factory as they are
+  freeze_vision_tower: true         # for Qwen3-Omni: the vision and the audio tower
+  freeze_multi_modal_projector: true
+  cutoff_len: 4096                  # 784 video tokens (32 frames at 224) + the sound + prompt + reply
+  preprocessing_num_workers: 16
+  logging_steps: 10
+  ddp_timeout: 180000000
+
+log:
+  wandb: true
+  project: mozaic
+  entity: null                      # W&B team or user; null: the logged-in account's default

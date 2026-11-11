@@ -1,0 +1,15 @@
+# Wan2.2-S2V: one photo + one sound track -> a talking video.
+generator_version: s2v14b-480p-s40-cfg4.5-retime16to25+seedvc-s5-cfg0.3
+render_key_prefixes: {cross: s2vcross, self: s2vself}
+size: 832*480
+infer_frames: 80
+sample_steps: 40
+guide_scale: 4.5
+start_from_ref: false         # true would paste a real frame of the person at frame 0
+prompt: >-
+  A person speaking directly to the camera in a medium close-up shot. Natural facial
+  expressions and lip movements synchronized to the speech, subtle head motion, steady
+  lighting, realistic skin texture, static background.
+native_fps: 16                # S2V makes 16 fps; frames are repeated to reach 25 fps
+retime_method: ffmpeg fps=25 frame duplication, then trim to expected_frames; video only
+min_per_chunk: 4.5            # measured cost, for planning only

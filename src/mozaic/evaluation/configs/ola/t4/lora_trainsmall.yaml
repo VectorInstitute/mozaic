@@ -1,0 +1,38 @@
+# ola/t1/zeroshot.yaml for T4, zero-shot: its input unchanged; a T4-length answer, free text
+model: ola                          # code in models/mllms/ola, results in results/ola
+family: mllm                        # mllm (answers in text) or classifier (class probabilities)
+model_version: THUdyh/Ola-7b
+trained:                            # the training run: its config (training/configs) and data
+  config: ola/t4_lora
+  data: small
+code: external-repos/ola              # the authors' code, git-ignored: github Ola-Omni/Ola, f681820
+cuda_home: models_weights/cuda-nvcc-12.1   # CUDA 12.1's nvcc (conda, nvidia channel): deepspeed asks it its version
+
+experiment_name: mozaic_sft_lora_32f_224_trainsmall
+
+# The input: model.py reads each clip with the same reader as every model and turns it into Ola's input with the
+# authors' own steps.
+frames: 32                          # per clip, evenly spaced, as every model (its own example takes 64); all 32 reach
+                                    # the language model (see the README)
+audio_sample_rate: 16000            # as every config; Ola hears sound at 16 kHz
+# Frame size: its own step enlarges each 224 x 224 frame to 256 x 256; the model makes 73 pieces of each. t1 sends
+# each clip's frames and its sound (the model puts the video first, then the sound); t2 and t3's face questions send
+# silent videos, t3's voice questions the two sounds. Its two sound encoders take 30 s windows (the clip's sound, then
+# silence); their projector makes a piece of every 10 encoder steps: 150 a window.
+silence: cut                        # only the encoder steps of the clip's own sound go on (154 for 3 s, 306 for 6 s:
+                                    # 15 and 30 pieces); kept: every step of the 30 s window, the authors' way
+answer_choices: false               # T4 is free text (T1-T3 ran with true: ola/t1/zeroshot.yaml)
+stop_when_answered: true            # stop once the reply holds both parts for good (t4_prompts.answered): greedy, Ola
+                                    # writes its object again and again up to 8,192 tokens (4 min) in 1 reply of 37;
+                                    # the answer read is the same, only the repeats are not written
+
+generation:                         # transformers' generate(), as the authors' example calls it
+  do_sample: false                  # greedy, as every model on T1-T3
+  max_new_tokens: 8192              # T4's limit (evaluation/README.md, Generation); T1-T3: 256
+  repetition_penalty: 1.0           # off, as every model answers (its generation_config.json sets 1.05)
+
+stop_after_failures: 3              # failed questions in a row before the run stops
+
+tasks:                              # T4 on MOZAIC-Small's test split
+  t4:
+    file: t4_test.jsonl             # --subset small only; never t4_golden.jsonl

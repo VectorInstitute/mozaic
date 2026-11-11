@@ -1,0 +1,19 @@
+# PE-AV trained on MOZAIC-Small's t1 (layernorm tuning), tested on t1's test split (--subset: Small's or the full one)
+model: pe_av                        # name in load_model; results in results/pe_av/ln_mean_mlp_trainsmall/t1/
+family: classifier
+trained:                            # the training run: its config (training/configs) and data
+  config: pe_av/t1_ln
+  data: small                       # full: training/; small: training_small/ (whatever --subset tests)
+experiment_name: ln_mean_mlp_trainsmall  # results/<model>/ln_mean_mlp_trainsmall/ (results_small/ with --subset small)
+# frames, audio rate, input format: the training config inside best.pt
+
+batch_size: 256                     # questions per predict_proba call
+micro_batch_size: 4                 # clips per forward; memory only
+workers: 8                          # clip readers
+stop_after_failures: 3
+
+tasks:                              # test split only: train and val were seen in training
+  t1:
+    file: t1_test.jsonl
+    filters:
+      arms: [vocoded]               # as in training: real-voice clips only; fake-voice clips have one arm and are always kept

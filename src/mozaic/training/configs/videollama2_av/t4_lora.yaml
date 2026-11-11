@@ -1,0 +1,29 @@
+model: videollama2_av
+task: t4
+experiment_name: lora_32f_224       # training_small/videollama2_av/lora_32f_224/t4/; change it when a setting changes
+weights: models_weights/videollama2.1-7b-av   # the copy evaluation uses, read only
+
+questions:                          # T4 exists on MOZAIC-Small only: --subset small
+  train:
+    file: t4_train.jsonl
+  val:
+    file: t4_val.jsonl
+
+eval_config: videollama2_av/t4/lora_trainsmall  # evaluation/configs: its input and generation, through the test code (videollama2_inputs.py)
+
+frames: 32
+audio_sample_rate: 16000
+
+train:                              # the protocol's recipe, as Qwen2.5-Omni's T4
+  epochs: 3
+  lr: 1.0e-4
+  weight_decay: 0.01                # AdamW, no schedule
+  batch_size: 32                    # per optimizer step, over all GPUs
+  micro_batch_size: 1
+  seed: 0
+  select_on: text.both.rouge_l      # t4_metrics' ROUGE-L of both parts: no judge call per epoch
+
+lora:                               # the language model's attention and MLP layers (videollama2_inputs.py); the towers stay frozen
+  rank: 16
+  alpha: 32
+  dropout: 0.05

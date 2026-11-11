@@ -1,0 +1,19 @@
+# HAVIC trained on the full MOZAIC's t1 (layernorm tuning), tested on t1's test split (--subset: Small's or the full one)
+model: havic                        # name in load_model; results in results/havic/ln_mlp_trainfull/t1/
+family: classifier
+trained:                            # the training run: its config (training/configs) and data
+  config: havic/t1_ln
+  data: full                        # full: training/; small: training_small/ (whatever --subset tests)
+experiment_name: ln_mlp_trainfull   # results/<model>/ln_mlp_trainfull/ (results_small/ with --subset small)
+# frames, audio rate, input format: the training config inside best.pt
+
+batch_size: 256                     # questions per predict_proba call
+micro_batch_size: 8                 # clips per forward; memory only
+workers: 8                          # clip readers
+stop_after_failures: 3
+
+tasks:                              # test split only: train and val were seen in training
+  t1:
+    file: t1_test.jsonl
+    filters:
+      arms: [vocoded]               # as in training: real-voice clips only; fake-voice clips have one arm and are always kept

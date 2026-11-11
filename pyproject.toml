@@ -1,0 +1,28 @@
+[project]
+name = "mozaic"
+version = "0.1.0"
+description = "MOZAIC: an audio-visual deepfake benchmark"
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml",
+    "numpy",
+    "av",
+    "pillow",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pandas",
+    "pyarrow",
+]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+mozaic = ["**/*.yaml"]

@@ -1,0 +1,41 @@
+model: vita_1_5                     # code in models/mllms/vita_1_5, results in results/vita_1_5
+family: mllm                        # mllm (answers in text) or classifier (class probabilities)
+model_version: VITA-MLLM/VITA-1.5
+weights: models_weights/vita-1.5   # our copy, HF revision e42b47fa, read only (without its speech-output files)
+vision_encoder: models_weights/internvit-300m-448px   # OpenGVLab/InternViT-300M-448px fe158954, named in its config
+audio_encoder: models_weights/vita-1.5-audioenc       # VITA-MLLM/VITA-1.5_AudioEnc d8bf0839, named in its config
+code: external-repos/vita             # the authors' code, git-ignored: github VITA-MLLM/VITA, 35d064a
+
+experiment_name: zeroshot_32f_224   # results go to {experiment_name}_{split}, e.g. zeroshot_32f_224_test
+
+# The input: model.py reads each clip with the same reader as every model and turns it into VITA's input with the
+# authors' own steps.
+frames: 32                          # per clip, evenly spaced, as every model (its own reader takes 1 a second, at
+                                    # most 16: 4 or 7 for our clips)
+audio_sample_rate: 16000            # as every config; VITA hears sound at 16 kHz
+# Frame size: its picture encoder takes 448 x 448, so each 224 x 224 frame is enlarged; the model makes 256 pieces of
+# each. t1 sends each clip's frames, then its sound, then the question; t2 and t3's face questions send silent
+# videos, t3's voice questions the two sounds. Its sound channel was made for the user's spoken question; here it
+# carries the clip's own sound (no padding: 38 pieces for 3 s, 76 for 6 s).
+input_cap: null                     # their code cuts the input at 6,200 pieces (their training length), also when
+                                    # answering; 32 frames are 8,192 pieces (t3 face 16,384): no cut (null), its
+                                    # language model takes 32,768
+seed: 0                             # their sound step adds random noise (dither, a training setting): the same noise
+                                    # for every question, so a rerun gives the same answer
+answer_choices: true                # the reply can only be its answer mark, then {"answer": "<one of the options>"},
+                                    # as minicpm_o_vllm: VITA sometimes writes the option alone ("neither"); its mark is
+                                    # dropped as their evaluations do, and kept in the usage
+
+generation:                         # transformers' generate(), as the authors' example calls it
+  do_sample: false                  # greedy, as every model on T1-T3
+  max_new_tokens: 256               # a T1-T3 answer is a short JSON
+  repetition_penalty: 1.0           # off, as every model answers (its generation_config.json sets 1.05)
+
+stop_after_failures: 3              # failed questions in a row before the run stops
+
+# Question file and filters per task, as in gemini_3_8_flash/t1/zeroshot.yaml; {split} is --split (test by default).
+tasks:
+  t1:
+    file: t1_{split}.jsonl
+    filters:
+      arms: [vocoded]               # real-voice clips only; fake-voice clips have one arm and are always kept

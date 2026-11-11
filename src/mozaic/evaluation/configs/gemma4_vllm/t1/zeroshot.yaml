@@ -1,0 +1,34 @@
+model: gemma4_vllm                  # code in models/mllms/gemma4_vllm, results in results/gemma4_vllm
+family: mllm                        # mllm (answers in text) or classifier (class probabilities)
+model_version: google/gemma-4-12B-it
+weights: models_weights/gemma-4-12b-it   # our copy, HF revision 707f0a3b, read only
+
+experiment_name: zeroshot_32f_224   # results go to {experiment_name}_{split}, e.g. zeroshot_32f_224_test
+
+# The input: each clip is read by vLLM's own readers, as for Nemotron.
+frames: 32                          # per clip, evenly spaced (vLLM's video reader, num_frames)
+audio_sample_rate: 16000            # as every config; Gemma hears sound at 16 kHz
+# Frame size: we send the clips' own 224 x 224 frames; Gemma enlarges them to 384 x 384 itself (its smallest
+# size for video frames, see the model's README). t1 sends each clip's video, then its sound (Gemma cannot take the sound
+# inside the video); t2 and t3's face questions send silent videos, t3's voice questions the two sounds.
+
+vllm:                               # vLLM's engine, on 1 A40 (48 GB): its 24 GB of weights fit one
+  gpu_memory_utilization: 0.92      # share of the GPU's memory vLLM may use
+  mm_processor_cache_gb: 0          # no cache: every clip is read fresh (as in the other vLLM configs)
+  attention_backend: TRITON_ATTN    # Gemma's 512-wide layers: on A40s vLLM would pick FlashInfer, which needs nvcc
+  seed: 0
+
+generation:                         # vLLM's SamplingParams
+  temperature: 0.0                  # greedy, as every model on T1-T3
+  max_tokens: 256                   # a T1-T3 answer is a short JSON
+
+batch_size: 100                     # questions run_inference gives the model at once; vLLM answers them together
+readers: 12                         # threads reading a batch's clips
+stop_after_failures: 3              # failed batches in a row before the run stops
+
+# Question file and filters per task, as in gemini_3_8_flash/t1/zeroshot.yaml; {split} is --split (test by default).
+tasks:
+  t1:
+    file: t1_{split}.jsonl
+    filters:
+      arms: [vocoded]               # real-voice clips only; fake-voice clips have one arm and are always kept

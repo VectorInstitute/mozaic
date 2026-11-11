@@ -1,0 +1,34 @@
+# minicpm_o_vllm/t1/zeroshot.yaml for T4, fine-tuned on MOZAIC-Small (training/configs/minicpm_o/t4_lora.yaml): --subset small
+model: minicpm_o_vllm               # code in models/mllms/minicpm_o_vllm; results in results/minicpm_o_vllm/mozaic_sft_lora_32f_224_trainsmall/t4/
+family: mllm
+model_version: openbmb/MiniCPM-o-4_5  # the base model
+trained:                            # the training run: its config (training/configs) and data
+  config: minicpm_o/t4_lora
+  data: small
+experiment_name: mozaic_sft_lora_32f_224_trainsmall
+
+frames: 32                          # per clip, evenly spaced (vLLM's video reader, num_frames)
+audio_sample_rate: 16000
+normalize_audio: true               # vLLM 0.28 gives this data's sound unscaled; training has it in [-1, 1]
+
+vllm:
+  gpu_memory_utilization: 0.92
+  mm_processor_cache_gb: 0
+  trust_remote_code: true
+  seed: 0
+
+chat_template_kwargs:
+  enable_thinking: false
+
+generation:
+  temperature: 0.0
+  max_tokens: 8192                  # T4's limit
+answer_choices: false               # T4 is free text
+
+batch_size: 100
+readers: 12
+stop_after_failures: 3
+
+tasks:                              # test split only: train and val were seen in training
+  t4:
+    file: t4_test.jsonl             # --subset small only; never t4_golden.jsonl

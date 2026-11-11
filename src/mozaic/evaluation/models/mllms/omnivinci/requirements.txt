@@ -1,0 +1,21 @@
+torch==2.3.0                # the authors' versions (their pyproject.toml), CUDA 12.1 build: uv pip install --torch-backend cu121
+torchvision==0.18.0
+transformers==4.46.0
+tokenizers==0.20.3          # as in Ahmed's working OmniVinci setup (sonic-o1)
+accelerate==0.34.2
+huggingface-hub==0.36.2
+safetensors==0.7.0
+# its picture and sound encoders ask for FlashAttention 2: the authors' ready-made wheel (no compiling)
+flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.5.8/flash_attn-2.5.8+cu122torch2.3cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+s2wrapper @ git+https://github.com/bfshi/scaling_on_scales@9c008a37540e761f53574b488979db6e49a64312   # imported by its picture encoder
+openai-whisper==20250625    # its sound steps (padding, spectrogram)
+librosa==0.11.0
+soundfile==0.13.1
+kaldiio==2.18.1             # imported by its media code
+decord==0.6.0               # imported by its media code
+opencv-python-headless==4.8.0.76
+einops==0.6.1
+beartype==0.22.9            # imported by its time stamps code
+numpy==1.26.4
+pillow==12.1.1
+av==17.0.0                  # reads our frames and sound: the newest PyAV for Python 3.10

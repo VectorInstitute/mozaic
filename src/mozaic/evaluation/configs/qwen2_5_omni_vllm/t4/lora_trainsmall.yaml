@@ -1,0 +1,30 @@
+# Qwen2.5-Omni-7B fine-tuned on MOZAIC-Small's t4 (LoRA SFT, training/mllms/), tested on t4's test split (--subset: Small's or the full one) (T4 exists on Small only: --subset small)
+model: qwen2_5_omni_vllm            # code in models/mllms/qwen_omni_vllm; results in results/qwen2_5_omni_vllm/mozaic_sft_lora_32f_224_trainsmall/t4/
+family: mllm
+model_version: Qwen/Qwen2.5-Omni-7B # the base model
+trained:                            # the training run: its config (training/configs) and data
+  config: qwen2_5_omni/t4_lora
+  data: small                       # full: training/; small: training_small/ (whatever --subset tests)
+experiment_name: mozaic_sft_lora_32f_224_trainsmall  # results/<model>/mozaic_sft_lora_32f_224_trainsmall/ (results_small/ with --subset small)
+
+# The input, as in qwen2_5_omni_vllm/t1/zeroshot.yaml (zero-shot) and as in training.
+frames: 32                          # per clip, evenly spaced (its FPS_MIN_FRAMES = FPS_MAX_FRAMES = 32)
+frame_size: 224                     # the clips' own 224 x 224 (the defaults would enlarge them to 336)
+audio_sample_rate: 16000            # as every config; qwen_omni_utils reads sound at 16 kHz
+
+vllm:                               # vLLM's engine, on one A40 (48 GB) or A100
+  gpu_memory_utilization: 0.92
+  mm_processor_cache_gb: 0          # off: with it, a clip seen twice loses its sound-in-video and fails
+  seed: 0
+
+generation:                         # vLLM's SamplingParams
+  temperature: 0.0                  # greedy, as in validation
+  max_tokens: 8192                  # T4's limit (evaluation/README.md, Generation)
+
+batch_size: 100                     # questions run_inference gives the model at once; vLLM answers them together
+readers: 12                         # threads reading a batch's clips
+stop_after_failures: 3              # failed batches in a row before the run stops
+
+tasks:                              # test split only: train and val were seen in training
+  t4:
+    file: t4_test.jsonl             # --subset small only (T4 exists on Small only); never t4_golden.jsonl

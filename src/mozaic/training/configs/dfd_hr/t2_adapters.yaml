@@ -1,0 +1,40 @@
+model: dfd_hr
+task: t2
+experiment_name: adapters_mean_mlp  # training/dfd_hr/adapters_mean_mlp/t2/; change it when a setting changes
+
+questions:                          # the same as evaluation: all T2 questions kept
+  train:
+    file: t2_train.jsonl
+    # filters:                      # not used
+    #   frames: [77]                # 77 only: Animate exists only at 77f
+  val:
+    file: t2_val.jsonl
+
+frames: 32                          # as every evaluated model: evenly spaced, full frame
+audio_sample_rate: 16000            # not read: t2 is about the video only
+
+backbone:
+  checkpoint: models_weights/clip/ViT-L-14.pt
+  # DFD-HR's own settings (model.py DEFAULTS) apply unless set here, e.g. routed_blocks: [21, 22, 23]
+
+head: {type: mlp, dropout: 0.1}
+tuning: {mode: frozen}              # CLIP frozen; DFD-HR's adapters, token routers and query attention
+                                    # are not in CLIP's checkpoint, so they train with the head
+
+train:
+  epochs: 10
+  lr: 1.0e-4
+  weight_decay: 0.01
+  batch_size: 32                    # per optimizer step, over all GPUs
+  micro_batch_size: 2               # per GPU per forward: 2 clips x 32 frames x 5 CLIP-L views; memory only
+  workers: 8                        # per GPU
+  seed: 0
+  amp: bf16
+  class_weights: balanced
+  select_on: macro.f1
+  log_every: 50
+
+log:
+  wandb: true
+  project: mozaic
+  entity: null                      # W&B team or user; null: the logged-in account's default

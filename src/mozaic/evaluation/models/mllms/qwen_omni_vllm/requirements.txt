@@ -1,0 +1,16 @@
+# Everything Qwen-Omni with vLLM needs, at the versions it was tested with. Its own environment on uv's
+# Python (uv venv .venv_qwen_omni_vllm --python 3.12.12 --managed-python), see README.md:
+#   uv pip install --python .venv_qwen_omni_vllm/bin/python --torch-backend cu128 -e . \
+#       -r src/mozaic/evaluation/models/mllms/qwen_omni_vllm/requirements.txt
+vllm==0.17.1
+torch==2.10.0               # CUDA 12.8 build: uv pip install --torch-backend cu128
+torchvision==0.25.0         # qwen-omni-utils reads the videos with it
+torchaudio==2.10.0
+transformers==4.57.6
+flashinfer-python==0.6.4
+qwen-omni-utils==0.0.9      # reads each clip: frames and sound
+av==19.0.1                  # torchvision decodes with it; the version behind our other models' frames
+librosa==0.11.0             # qwen-omni-utils reads the sound with it
+soundfile==0.13.1
+pillow==12.1.1
+numpy==2.2.6

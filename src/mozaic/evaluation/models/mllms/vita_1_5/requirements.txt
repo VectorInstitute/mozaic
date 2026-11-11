@@ -1,0 +1,26 @@
+torch==2.3.1                # the authors' versions (their requirements.txt), CUDA 12.1 build:
+torchvision==0.18.1         #   uv pip install --torch-backend cu121
+torchaudio==2.3.1           # its sound step (Kaldi filterbank)
+transformers==4.44.2        # their requirements.txt says 4.41.1, but their code (vita_qwen2.py) needs the
+                            # cache_position that 4.42 and later pass; 4.44.2 is the version their checkpoint was
+                            # saved with (its config.json)
+tokenizers==0.19.1
+xformers==0.0.27            # imported when its picture encoders load (the build for torch 2.3.1)
+# their README adds FlashAttention (its picture encoder uses it when installed): the ready-made wheel for torch 2.3 and
+# Python 3.10 (no compiling). deepspeed (theirs, for training) is left out: answering never imports it.
+flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.6.3/flash_attn-2.6.3+cu123torch2.3cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+# not pinned by the authors: the versions of Ahmed's working VITA environment (numpy below 2, as torch 2.3 was built)
+accelerate==1.12.0
+huggingface-hub==0.36.0
+safetensors==0.7.0
+timm==1.0.22
+einops==0.8.1
+numpy==1.26.4
+pillow==12.0.0
+soundfile==0.13.1           # torchaudio's reader for the sound (WAV)
+jinja2==3.1.6
+pyyaml==6.0.3
+six==1.17.0                 # imported by its sound encoder (not in their requirements.txt)
+setuptools==80.9.0          # imported by triton (torch's) when xformers loads its kernels
+av==12.3.0                  # reads our frames and sound
+decord==0.6.0               # only for the pre-flight check: their video reader, compared with ours

@@ -1,0 +1,14 @@
+# uv venv .venv_avhubert --python 3.10
+# uv pip install --python .venv_avhubert/bin/python torch==2.3.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu121
+# uv pip install --python .venv_avhubert/bin/python -r src/mozaic/training/classifiers/avhubert/requirements.txt -e .
+# .venv_avhubert/bin/python -m pip install --no-build-isolation -e external-repos/av_hubert/fairseq
+pip<24.1
+numpy<1.24
+cython<3
+setuptools
+wheel
+python_speech_features==0.6
+scipy
+opencv-python-headless
+sentencepiece
+wandb

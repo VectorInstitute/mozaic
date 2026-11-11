@@ -1,0 +1,14 @@
+# uv venv .venv_llamafactory --python 3.11
+# uv pip install --python .venv_llamafactory/bin/python torch==2.6.0 torchaudio==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cu124
+# uv pip install --python .venv_llamafactory/bin/python -r src/mozaic/training/mllms/requirements.txt -e .
+llamafactory @ git+https://github.com/hiyouga/LLaMA-Factory.git@c683e59edd8f893abc5e1403184a1d0644817d2a
+transformers==4.56.2
+peft==0.18.1
+accelerate==1.10.1
+datasets==3.6.0
+av==16.0.0                          # the newest LLaMA-Factory accepts; 14.x has no wheel here
+qwen-omni-utils==0.0.9              # evaluation's reader (plugin.py)
+librosa
+audioread
+wandb
+pytest

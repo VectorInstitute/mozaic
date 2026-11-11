@@ -1,0 +1,10 @@
+# FaceFusion face swap: one standard setting, written down instead of inherited.
+generator_version: facefusion-inswapper128fp16+seedvc-s5-cfg0.3
+render_key_prefixes: {cross: ffcross, self: ffself}
+swapper_model: inswapper_128_fp16
+detector_model: yolo_face
+detector_score: 0.5
+face_enhancer: null           # off: a second model would sharpen only the fakes
+pixel_boost: 256x256
+output_video_quality: 95
+sec_per_render: 25.0          # measured cost, for planning only

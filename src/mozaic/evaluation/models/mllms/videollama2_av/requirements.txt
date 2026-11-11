@@ -1,0 +1,22 @@
+torch==2.2.0                # the authors' versions, CUDA 11.8 build: uv pip install --torch-backend cu118
+torchvision==0.17.0
+torchaudio==2.2.0           # their sound features (kaldi fbank)
+transformers==4.42.3
+tokenizers==0.19.1
+accelerate==0.26.1
+huggingface-hub==0.23.4
+peft==0.4.0                 # imported by their loader
+timm==1.0.3                 # their video connector
+einops==0.6.1
+decord==0.6.0               # imported by their video code
+imageio==2.34.0
+imageio-ffmpeg==0.4.9
+setuptools==80.9.0          # imageio-ffmpeg 0.4.9 imports pkg_resources, which setuptools 81 dropped
+moviepy==1.0.3
+opencv-python==4.6.0.66
+pytorchvideo==0.1.5         # the clip sampler of their sound steps
+librosa==0.11.0             # as in Ahmed's working VideoLLaMA2 setup (sonic-o1)
+soundfile==0.13.1
+numpy==1.26.4
+pillow==10.4.0
+av==17.0.0                  # reads our frames and sound: the newest PyAV for Python 3.10 (19.0.1 needs 3.12)

@@ -1,0 +1,28 @@
+model: omnivinci                    # code in models/mllms/omnivinci, results in results/omnivinci
+family: mllm                        # mllm (answers in text) or classifier (class probabilities)
+model_version: nvidia/omnivinci
+weights: models_weights/omnivinci   # our copy, HF revision 7b3777b1, read only; its code comes with it
+
+experiment_name: zeroshot_32f_224   # results go to {experiment_name}_{split}, e.g. zeroshot_32f_224_test
+
+# The input: model.py reads each clip with the same reader as every model and turns it into OmniVinci's input with
+# the authors' own steps.
+frames: 32                          # per clip, evenly spaced (also OmniVinci's default)
+audio_sample_rate: 16000            # as every config; OmniVinci hears sound at 16 kHz
+# Frame size: we send the clips' own 224 x 224 frames; its picture encoder enlarges them to 448 x 448, and inside the
+# model every 8 neighbouring frames are averaged into one (as it was trained): 4 pictures per clip. t1 sends each
+# clip's frames with its sound, as one video with its soundtrack; t2 and t3's face questions send silent videos, t3's
+# voice questions the two sounds. Sound: its sound encoder takes 30 s (the clip's sound, then silence); the language
+# model gets only the pieces that cover the clip's own sound (t1: the model cuts them itself; t3: model.py, the same way).
+
+generation:                         # transformers' generate(), as the authors' example calls it
+  do_sample: false                  # greedy, as every model on T1-T3
+  max_new_tokens: 256               # a T1-T3 answer is a short JSON
+  repetition_penalty: 1.0           # off, as every model answers (its language model's generation_config.json says 1.05)
+
+stop_after_failures: 3              # failed questions in a row before the run stops
+
+# Question file and filters per task, as in gemini_3_8_flash/t1/zeroshot.yaml; {split} is --split (test by default).
+tasks:
+  t2:
+    file: t2_{split}.jsonl

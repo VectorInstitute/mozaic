@@ -1,0 +1,4 @@
+# Seed-VC voice conversion: the driver's words in the other person's voice.
+diffusion_steps: 5
+inference_cfg_rate: 0.3
+length_adjust: 1.0            # keep the source timing, so lips stay in sync

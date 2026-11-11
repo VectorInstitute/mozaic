@@ -1,0 +1,22 @@
+# T1: spot the fake
+
+# Which clips go into the question files. The vocoded view, as in T3 and T4: a real voice
+# is its vocoded copy only (RVRA, FVRA vocoded); a converted voice has one version (RVFA,
+# FVFA main), already vocoded inside Seed-VC. So every voice has been through a vocoder.
+arms:
+  RVRA: vocoded
+  RVFA: main
+  FVRA: vocoded
+  FVFA: main
+
+# More filters. null keeps all.
+filters:
+  lengths: null     # 77f, 153f
+
+# Options are shuffled per clip, seeded by this and the clip id.
+options_seed: 20261008
+
+# Samples (--size): drawn from this split, balanced over labels and clip kinds.
+sample:
+  split: test
+  seed: 20261008

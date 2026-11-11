@@ -1,0 +1,35 @@
+# minicpm_o_vllm/t1/zeroshot.yaml for T4, zero-shot: its input unchanged; a T4-length answer, free text
+model: minicpm_o_vllm               # code in models/mllms/minicpm_o_vllm, results in results/minicpm_o_vllm
+family: mllm                        # mllm (answers in text) or classifier (class probabilities)
+model_version: openbmb/MiniCPM-o-4_5
+weights: models_weights/minicpm-o-4_5   # our copy, HF revision d59117d1, read only
+
+experiment_name: zeroshot_32f_224   # results go to {experiment_name}_{split}, e.g. zeroshot_32f_224_test
+
+# The input: each clip is read by vLLM's own readers, as for Nemotron and Gemma.
+frames: 32                          # per clip, evenly spaced (vLLM's video reader, num_frames)
+audio_sample_rate: 16000            # as every config; MiniCPM-o hears sound at 16 kHz
+# MiniCPM-o turns each frame into 64 tokens itself. t1 sends each clip's video, then its sound (vLLM takes
+# MiniCPM-o's sound as its own part); t2 and t3's face questions send silent videos, t3's voice questions the two sounds.
+
+vllm:                               # vLLM's engine, on 1 A40 (48 GB): its 19 GB of weights fit one
+  gpu_memory_utilization: 0.92      # share of the GPU's memory vLLM may use
+  mm_processor_cache_gb: 0          # no cache: every clip is read fresh (as in the other vLLM configs)
+  trust_remote_code: true           # the weights folder has some of the model's own Python code; vLLM must run it
+  seed: 0
+
+chat_template_kwargs:               # MiniCPM-o's chat template
+  enable_thinking: false            # thinking off (on by default): it answers right away; a T1-T3 answer is a short JSON
+
+generation:                         # vLLM's SamplingParams
+  temperature: 0.0                  # greedy, as every model on T1-T3
+  max_tokens: 8192                  # T4's limit (evaluation/README.md, Generation); T1-T3: 256
+answer_choices: false               # T4 is free text (T1-T3 ran with true: minicpm_o_vllm/t1/zeroshot.yaml)
+
+batch_size: 100                     # questions run_inference gives the model at once; vLLM answers them together
+readers: 12                         # threads reading a batch's clips
+stop_after_failures: 3              # failed batches in a row before the run stops
+
+tasks:                              # T4 on MOZAIC-Small's test split
+  t4:
+    file: t4_{split}.jsonl          # results in {experiment_name}_test, as T1-T3; --subset small only (T4 exists on Small only); never t4_golden.jsonl

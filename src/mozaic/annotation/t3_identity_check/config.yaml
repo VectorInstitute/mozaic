@@ -1,0 +1,49 @@
+# T3: identity check
+
+# Clip 2 is drawn at random once per pair and person, seeded by this, the pair and the
+# person, so the draw is the same in every build.
+clip2_seed: 7
+
+# Options are shuffled per question, seeded by this and the question id.
+options_seed: 20261008
+
+# Samples (--size): drawn from this split, an exact number of questions per kind:
+# [part, what clip 1 shows, frames, whose real recording clip 2 is (A or B), questions].
+# Each part has 5 questions per answer, so 5 x 4 answers x 2 parts: --size is 40.
+# Animate exists only at 77 frames. Every question comes from a different pair.
+# Real voices are the vocoded ones only (the vocoded view): every voice in clip 1 has then
+# been through the vocoder, real or converted, so its sound gives nothing away.
+sample:
+  split: test
+  seed: 7
+  counts:
+    # face: real, same person (clip 2 = A)
+    - [face, real, 77, A, 3]
+    - [face, real, 153, A, 2]
+    # face: real, different person (clip 2 = B)
+    - [face, real, 77, B, 2]
+    - [face, real, 153, B, 3]
+    # face: fake of this person (a fake of B, clip 2 = B)
+    - [face, facefusion, 77, B, 1]
+    - [face, facefusion, 153, B, 1]
+    - [face, s2v, 77, B, 1]
+    - [face, s2v, 153, B, 1]
+    - [face, animate, 77, B, 1]
+    # face: fake of a different person (a fake of B, clip 2 = A)
+    - [face, facefusion, 77, A, 1]
+    - [face, facefusion, 153, A, 1]
+    - [face, s2v, 77, A, 1]
+    - [face, s2v, 153, A, 1]
+    - [face, animate, 77, A, 1]
+    # voice: real, same person (A's vocoded voice, clip 2 = A)
+    - [voice, vocoded, 77, A, 3]
+    - [voice, vocoded, 153, A, 2]
+    # voice: real, different person (A's vocoded voice, clip 2 = B)
+    - [voice, vocoded, 77, B, 2]
+    - [voice, vocoded, 153, B, 3]
+    # voice: fake of this person (converted to B's voice, clip 2 = B)
+    - [voice, converted, 77, B, 3]
+    - [voice, converted, 153, B, 2]
+    # voice: fake of a different person (converted to B's voice, clip 2 = A)
+    - [voice, converted, 77, A, 2]
+    - [voice, converted, 153, A, 3]

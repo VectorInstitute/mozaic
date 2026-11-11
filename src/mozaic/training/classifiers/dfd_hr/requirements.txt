@@ -1,0 +1,5 @@
+# uv venv .venv_dfd_hr --python 3.10
+# uv pip install --python .venv_dfd_hr/bin/python torch==2.3.1 torchvision==0.18.1 --index-url https://download.pytorch.org/whl/cu121
+# uv pip install --python .venv_dfd_hr/bin/python -r src/mozaic/training/classifiers/dfd_hr/requirements.txt -e .
+wandb
+pytest

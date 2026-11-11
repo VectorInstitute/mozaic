@@ -1,0 +1,12 @@
+# Wan2.2-Animate: puts the other person into the driver clip (replace mode).
+generator_version: animate14b-replace-480p+seedvc-s5-cfg0.3
+render_key_prefixes: {cross: cross, self: self}
+prompt: >-
+  A photorealistic video of a person speaking directly to the camera in a television interview,
+  natural skin texture, sharp focus, even natural lighting, steady framing, realistic detail
+resolution_area: "832 480"
+sample_steps: 20
+sample_shift: 5.0
+guide_scale: 1.0
+frame_num: 77                 # one chunk: longer clips drift back to the driver's look
+refert_num: 1

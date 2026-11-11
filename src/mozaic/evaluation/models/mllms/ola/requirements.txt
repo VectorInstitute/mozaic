@@ -1,0 +1,31 @@
+torch==2.1.2                # the authors' versions (their pyproject.toml), CUDA 12.1 build:
+torchvision==0.16.2         #   uv pip install --torch-backend cu121
+torchaudio==2.1.2
+transformers==4.43.4
+tokenizers==0.19.1
+sentencepiece==0.1.99
+accelerate==0.33.0
+timm==0.9.16
+einops==0.6.1
+einops-exts==0.0.4
+setuptools==59.5.0
+wheel==0.46.3               # builds deepspeed with this setuptools
+deepspeed==0.12.6           # their training extra: their picture encoder's file imports it (built without its CUDA
+                            # ops: --no-build-isolation-package deepspeed); when imported on a GPU node it runs
+                            # `nvcc -V`: cuda_home in the config (see the README)
+# their picture encoder asks for FlashAttention 2: the ready-made wheel for torch 2.1 and Python 3.10 (no compiling)
+flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.6.3/flash_attn-2.6.3+cu123torch2.1cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+# not pinned by the authors: the versions of Ahmed's working Ola environment
+openai-whisper==20250625    # its Whisper encoder and sound steps
+huggingface-hub==0.36.2
+safetensors==0.7.0
+numpy==1.26.4
+pillow==10.4.0
+scipy==1.15.3
+librosa==0.11.0
+soundfile==0.13.1
+pyyaml==6.0.3
+av==17.0.0                  # reads our frames and sound
+# only for the pre-flight check: their own video and sound readers, compared with ours
+decord==0.6.0
+moviepy==1.0.3

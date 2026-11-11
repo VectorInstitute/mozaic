@@ -1,0 +1,7 @@
+# uv venv .venv_havic --python 3.10
+# uv pip install --python .venv_havic/bin/python torch==2.3.1 torchaudio==2.3.1 torchvision==0.18.1 --index-url https://download.pytorch.org/whl/cu121
+# uv pip install --python .venv_havic/bin/python -r src/mozaic/training/classifiers/havic/requirements.txt -e .
+timm==0.4.5
+einops
+wandb
+pytest

@@ -1,0 +1,41 @@
+model: avhubert
+task: t3
+experiment_name: full_mean_mlp      # training_small/avhubert/full_mean_mlp/t3/; change it when a setting changes
+
+questions:                          # T3 trains on MOZAIC-Small only: --subset small. The same filters as evaluation (configs/avhubert/t3/full_trainsmall.yaml)
+  train:
+    file: t3_train.jsonl
+    filters:
+      arms: [vocoded]               # voice questions: vocoded real voices (and converted ones); face questions always kept
+  val:
+    file: t3_val.jsonl
+    filters:
+      arms: [vocoded]
+
+frames: 32                          # per clip (face questions), as every evaluated model: evenly spaced, full frame
+audio_sample_rate: 16000            # the complete audio of each clip (voice questions)
+
+backbone:
+  checkpoint: models_weights/avhubert/large_vox_iter5.pt
+  code: external-repos/av_hubert             # the authors' repo: avhubert/ and their fairseq fork
+
+head: {type: mlp, dropout: 0.1}     # one per part, on both clips' mean features, layer-normed: [a, b, |a - b|, a * b] (common/pairs.py)
+tuning: {mode: full}                # frozen | layernorm | full
+
+train:
+  epochs: 10
+  lr: 1.0e-4
+  weight_decay: 0.01
+  batch_size: 32                    # per optimizer step, over all GPUs
+  micro_batch_size: 4               # per GPU per forward: 4 questions, 8 clips; memory only (full: gradients through the backbone)
+  workers: 6                        # per GPU: an A100 node has 24 CPUs
+  seed: 0
+  amp: bf16
+  class_weights: balanced
+  select_on: macro.f1
+  log_every: 50
+
+log:
+  wandb: true
+  project: mozaic
+  entity: null                      # W&B team or user; null: the logged-in account's default

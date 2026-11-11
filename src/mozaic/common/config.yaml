@@ -1,0 +1,25 @@
+# Shared settings for every stage. Same for everyone who clones the repo.
+
+# Absolute path of the dataset. Download it from Hugging Face into data/, or anywhere
+# else, and write that path here. MOZAIC_ROOT in the environment overrides it.
+data_root: /path/to/data
+
+# File holding secrets (API keys). Relative paths start from the repo root.
+# Anyone can pass their own with --env-file.
+env_file: .env
+
+# Subsets of the dataset (common/subsets.py). Subset X has metadata_X.jsonl, pairs_X.jsonl,
+# summary_X.json, metadata_table_X.parquet, qas_X/, results_X/ and training_X/; videos/ is shared.
+subsets: [small]
+
+# Folder name of each task under qas/
+tasks:
+  t1: t1_spot_the_fake
+  t2: t2_manipulation_type
+  t3: t3_identity_check
+  t4: t4_explanation
+
+# Defaults for reading clips. A model config can override them.
+sampling:
+  frames: 32
+  audio_sample_rate: 16000

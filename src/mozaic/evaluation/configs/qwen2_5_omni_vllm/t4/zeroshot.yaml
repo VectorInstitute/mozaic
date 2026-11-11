@@ -1,0 +1,29 @@
+# qwen2_5_omni_vllm/t1/zeroshot.yaml for T4, zero-shot: its input unchanged; a T4-length answer
+model: qwen2_5_omni_vllm            # code in models/mllms/qwen_omni_vllm, results in results/qwen2_5_omni_vllm
+family: mllm                        # mllm (answers in text) or classifier (class probabilities)
+model_version: Qwen/Qwen2.5-Omni-7B
+weights: models_weights/qwen2.5-omni-7b   # our copy, HF revision ae9e1690, read only
+
+experiment_name: zeroshot_32f_224   # results go to {experiment_name}_{split}, e.g. zeroshot_32f_224_test
+
+# The input, as in qwen3_omni_vllm/t1/zeroshot.yaml: qwen_omni_utils (0.0.9) defaults except these two.
+frames: 32                          # per clip, evenly spaced (its FPS_MIN_FRAMES = FPS_MAX_FRAMES = 32)
+frame_size: 224                     # the clips' own 224 x 224 (the defaults would enlarge them to 336)
+audio_sample_rate: 16000            # as every config; qwen_omni_utils reads sound at 16 kHz
+
+vllm:                               # vLLM's engine, on one A40 (48 GB) or A100
+  gpu_memory_utilization: 0.92
+  mm_processor_cache_gb: 0          # off: with it, a clip seen twice loses its sound-in-video and fails
+  seed: 0
+
+generation:                         # vLLM's SamplingParams
+  temperature: 0.0                  # greedy, as in qwen3_omni_vllm/t1/zeroshot.yaml
+  max_tokens: 8192                  # T4's limit (evaluation/README.md, Generation); T1-T3: 256
+
+batch_size: 100                     # questions run_inference gives the model at once; vLLM answers them together
+readers: 12                         # threads reading a batch's clips
+stop_after_failures: 3              # failed batches in a row before the run stops
+
+tasks:                              # T4 on MOZAIC-Small's test split
+  t4:
+    file: t4_{split}.jsonl          # results in {experiment_name}_test, as T1-T3; --subset small only (T4 exists on Small only); never t4_golden.jsonl

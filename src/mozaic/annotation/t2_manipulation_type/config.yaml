@@ -1,0 +1,25 @@
+# T2: manipulation type
+
+# Which clips go into the split files (t2_train, t2_val, t2_test).
+filters:
+  # T2 is about the video only, so each video is asked once: RVFA has the same video
+  # as RVRA, FVFA as FVRA, and a vocoded clip as its main clip.
+  labels: [RVRA, FVRA]
+  arms: [main]
+  # Both lengths. Every clip gets the same four options. Wan2.2-Animate (full-body
+  # swap) exists only at 77f, so at 153f that option is never the right answer;
+  # per_frames in the scores shows each length apart.
+  lengths: null
+
+# Options are shuffled per clip, seeded by this and the clip id.
+options_seed: 20261008
+
+# Samples (--size): drawn from this split, balanced over the four answers.
+sample:
+  split: test
+  seed: 20261008
+  filters:
+    # 77f only, as in the original sample: at 153f the answer is never "full-body
+    # swap", so mixing lengths in a small sample would give it away. Set to null
+    # to sample both lengths.
+    lengths: [77f]

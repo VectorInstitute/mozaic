@@ -1,0 +1,17 @@
+# DFD-HR trained on the full MOZAIC's t2 (its adapters and routers trained, CLIP frozen), tested on t2's test split (--subset: Small's or the full one)
+model: dfd_hr                       # name in load_model; results in results/dfd_hr/adapters_mean_mlp_trainfull/t2/
+family: classifier
+trained:                            # the training run: its config (training/configs) and data
+  config: dfd_hr/t2_adapters
+  data: full                        # full: training/; small: training_small/ (whatever --subset tests)
+experiment_name: adapters_mean_mlp_trainfull  # results/<model>/adapters_mean_mlp_trainfull/ (results_small/ with --subset small)
+# frames, audio rate, input format: the training config inside best.pt
+
+batch_size: 256                     # questions per predict_proba call
+micro_batch_size: 4                 # clips per forward; memory only
+workers: 8                          # clip readers
+stop_after_failures: 3
+
+tasks:                              # test split only: train and val were seen in training
+  t2:
+    file: t2_test.jsonl

@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>MOZAIC: An Audio-Video Deepfake Benchmark for Telling What Is Fake</title>
+  <meta name="description" content="MOZAIC is a paired audio-video deepfake benchmark: every source clip is released with a real or fake face and a real or fake voice.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="MOZAIC: An Audio-Video Deepfake Benchmark for Telling What Is Fake">
+  <meta property="og:description" content="A paired benchmark: every source clip comes with a real or fake face and a real or fake voice, so a detector\'s score can be traced to the picture or the sound.">
+  <meta property="og:image" content="assets/fig/overview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body id="top">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <img class="logo-img topbar-vector" src="assets/logo_vector.png" alt="Vector Institute">
+      <a class="brand" href="#top"><img src="assets/mozaic_icon.png" width="28" height="28" alt="" aria-hidden="true" style="display:block"><span class="brand-name">MOZAIC</span></a>
+      <button class="nav-toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      <nav class="nav" id="nav" aria-label="Sections">
+        <a href="#abstract">Abstract</a><a href="#dataset">Dataset</a><a href="#samples">Samples</a><a href="#tasks">Tasks</a><a href="#results">Results</a><a href="#explanations">Explanations</a><a href="#quickstart">Code</a><a href="#bibtex-sec">Cite</a>
+      </nav>
+      <img class="logo-img topbar-aixpert" src="assets/logo_aixpert.png" alt="AIXPERT">
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="title">MOZAIC: An Audio-Video Deepfake Benchmark for Telling <em>What</em> Is Fake</h1>
+          <p class="authors">Shaina Raza<sup>1</sup>, Mohamed Hafez<sup>1</sup>, Ahmed Radwan<sup>1</sup>, Khalid Elgazzar<sup>2</sup>, Kathryn Hume<sup>1</sup></p>
+          <p class="affiliations"><sup>1</sup>Vector Institute, Canada &nbsp;&nbsp; <sup>2</sup>Ontario Tech University, Canada</p>
+          <div class="button-row">
+            <a class="btn soon" href="#" aria-disabled="true" title="Available on release">Paper (soon)</a>
+            <a class="btn soon" href="#" aria-disabled="true" title="Available on release">arXiv (soon)</a>
+            <a class="btn btn-primary" href="https://huggingface.co/datasets/vector-institute/Mozaic" target="_blank" rel="noopener"><span aria-hidden="true">🤗</span> Dataset</a>
+            <a class="btn btn-primary" href="https://github.com/VectorInstitute/mozaic" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Code</a>
+            <a class="btn" href="#bibtex-sec">BibTeX</a>
+          </div>
+          <p class="lead">MOZAIC gives every clip a <strong>four-way label</strong> (real or fake video × real or fake audio), so a detector's score can be traced to the <strong>picture</strong> or the <strong>sound</strong>, and asks four questions: <strong>is it fake, what kind, whose identity, and why</strong>.</p>
+          <div class="badge-row">
+            <span class="pill">137,745 clips</span><span class="pill">169.9 hours</span><span class="pill">1,000 identities</span><span class="pill">15,014 source pairs</span><span class="pill">289,587 questions</span><span class="pill">4 tasks</span>
+          </div>
+        </div>
+        <div class="hero-figure">
+          <figure>
+            <img src="assets/fig/teaser.png" width="2100" height="1225" alt="MOZAIC overview: paired identities, video and voice generation, quality control, the six released conditions per pair, identity-disjoint splits, and the four evaluation tasks">
+            <figcaption><strong>Figure 1. MOZAIC.</strong> <em>Top:</em> a real clip of person A is paired with a same-gender person B. Three video generators (FaceFusion, Wan2.2-S2V, Wan2.2-Animate) and one voice converter (Seed-VC) create the fakes, and pairs that fail quality control are dropped. Each pair is released in six conditions: real or fake video with real, vocoded or fake audio. <em>Bottom:</em> the four tasks ask which modality is fake (T1), how the video was made (T2), whether a query clip is real and shows the same person as a reference (T3), and for a written explanation (T4).</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+    <section class="section" id="abstract">
+      <h2>Abstract</h2>
+      <div class="abstract-box">
+        <p>Audio-video (AV) deepfakes can fake the face, the voice, or both. Most benchmarks only ask whether a clip is real or fake, so they cannot show whether a detector relies on the picture, the voice, or encoding traces.</p>
+        <p>We present <strong>MOZAIC</strong>, a paired benchmark with a four-way label (real/fake video × real/fake audio) on every clip, so each modality's contribution can be measured directly. Fakes cover inner-face swapping, whole-frame video diffusion and voice conversion. The train, validation and test splits have disjoint identities. MOZAIC has 137,745 clips from 15,014 source pairs and four tasks: T1 audio-video authenticity, T2 manipulation type, T3 identity verification and T4 explanation.</p>
+        <p>We evaluate 12 omni-modal LLMs (MLLMs) zero-shot and five trained detectors. Zero-shot, the best MLLMs reach 35.6% on T1, 41.0% on T2, 47.5% on T3 and 5.15 out of 10 on T4, and catch fake video far more often than fake audio (43.6% vs 7.5%). With training, the best detectors reach 98.4% on T1 and 99.9% on T2, and LoRA fine-tuning lifts Qwen2.5-Omni to 83.4%, 73.6% and 75.8% on T1–T3; its explanation score rises from 4.42 to 6.98. The best T1 detector falls to 78.3% when the face-swap generator is held out of training, so generalization and explanation remain open. We release the dataset, a compact MOZAIC-Small split, code, training recipes, and prompts.</p>
+      </div>
+    </section>
+
+    <section class="section" id="overview">
+      <h2>Overview</h2>
+      <h3 class="h3">What MOZAIC measures</h3>
+      <ul class="bullets">
+            <li><strong>Which part is fake.</strong> Every clip has a real or fake face and a real or fake voice, so a score splits into video and audio.</li>
+            <li><strong>What kind of fake.</strong> An inner-face swap, a whole frame generated from a photo, or a frame redrawn from the original motion.</li>
+            <li><strong>Whose identity.</strong> Whether a clip is real or fake, and whether it shows the same person as a second clip.</li>
+            <li><strong>Why.</strong> A written explanation, scored by a judge against a reference.</li>
+          </ul>
+      <figure class="figure figure-large" aria-labelledby="stats-cap">
+        <div class="figure-grid-2 stats-fig">
+          <div><img src="assets/fig/Videos_Sunburst_A.png" width="2188" height="2253" alt="Sunburst of clips by label (RVRA 30,028, RVFA 15,014, FVRA, FVFA) and by generator (FaceFusion, Wan2.2-S2V, Wan2.2-Animate)" loading="lazy"><p class="sub-cap">(a) Clips by label and generator.</p></div>
+          <div><img src="assets/fig/C2_identity_transfer.png" width="650" height="490" alt="Bar chart: median similarity of each fake to source A (low, 0.01 to 0.14) and to target B (high, 0.50 to 0.87) for FaceFusion, Wan2.2-S2V, Wan2.2-Animate and Seed-VC" loading="lazy"><p class="sub-cap">(b) Identity transfer.</p></div>
+        </div>
+        <figcaption id="stats-cap"><strong>MOZAIC statistics.</strong> (a) Clips by label (inner ring) and generator (outer ring). (b) Median similarity of each fake to the source A and the target B, face for video generators and voice for Seed-VC: every generator moves the identity to B.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section" id="dataset">
+      <h2>Dataset</h2>
+      <div class="points-card">
+        <ul class="points">
+          <li><b>Pairs</b>A source clip of one person and a target person of the same gender, from VoxCeleb2: 15,014 pairs, at 3.08 s (77 frames) or 6.12 s (153 frames).</li>
+          <li><b>Fakes</b>The inner face is swapped (FaceFusion), or the whole frame is generated, from the sound (Wan2.2-S2V) or from the original's motion (Wan2.2-Animate). The voice is converted (Seed-VC).</li>
+          <li><b>Vocoded copies</b>Real voices are also released through BigVGAN, the vocoder Seed-VC uses, so a vocoder trace alone does not mean fake.</li>
+          <li><b>Same processing, split by person</b>Every clip gets the same final processing, and nobody in the test split appears in training.</li>
+        </ul>
+      </div>
+      <figure class="figure figure-large" aria-labelledby="qual-cap">
+        <img src="assets/fig/qualitative.png" width="1360" height="540" alt="Two pairs (a woman and a man), each shown as the real recording, FaceFusion, Wan2.2-S2V and Wan2.2-Animate: frames at 0 s and 3 s, a close-up, and the changed pixels in red" loading="lazy">
+        <figcaption id="qual-cap"><strong>What each generator changes.</strong> Same real frames of A, one generator per row: FaceFusion replaces only the inner face; Wan2.2-S2V and Wan2.2-Animate redraw the whole frame, driven by A's voice and A's motion. Last column: changed pixels in red.</figcaption>
+      </figure>
+      <p class="section-intro" style="margin-top:1.5rem">Clips are 3.08 s (77 frames) or 6.12 s (153 frames), 224×224 at 25 fps, with 16 kHz sound. The splits are by person: 700, 150 and 150 identities in train, val and test (96,957, 20,553 and 20,235 clips), half men and half women in each. MOZAIC-Small has 16,995 clips (21.0 hours) from 1,858 whole pairs of the same 1,000 identities, with 47,087 questions for T1 to T4.</p>
+    </section>
+
+    <section class="section" id="samples">
+      <h2>Watch and Listen</h2>
+      <p class="section-intro">The same test pair in all four versions. Pick the generator for the fake face; one clip plays at a time.</p>
+  <div class="gen-switch" role="group" aria-label="Generator for the fake face">
+    <button type="button" data-gen="facefusion" aria-pressed="true">FaceFusion</button>
+    <button type="button" data-gen="s2v" aria-pressed="false">S2V</button>
+    <button type="button" data-gen="animate" aria-pressed="false">Animate</button>
+  </div>
+  <div class="watch">
+    <figure class="clip t-rvra">
+      <video src="assets/video/rvra.mp4" poster="assets/video/poster_real.jpg" width="448" height="448" controls playsinline preload="none"></video>
+      <figcaption><span class="code">RVRA</span>real face, real voice</figcaption>
+    </figure>
+    <figure class="clip t-rvfa">
+      <video src="assets/video/rvfa.mp4" poster="assets/video/poster_real.jpg" width="448" height="448" controls playsinline preload="none"></video>
+      <figcaption><span class="code">RVFA</span>real face, fake voice (Seed-VC)</figcaption>
+    </figure>
+    <figure class="clip t-fvra">
+      <video class="fake" data-kind="fvra" src="assets/video/fvra_facefusion.mp4" poster="assets/video/poster_facefusion.jpg" width="448" height="448" controls playsinline preload="none"></video>
+      <figcaption><span class="code">FVRA</span>fake face (<span class="gen-name">FaceFusion</span>), real voice</figcaption>
+    </figure>
+    <figure class="clip t-fvfa">
+      <video class="fake" data-kind="fvfa" src="assets/video/fvfa_facefusion.mp4" poster="assets/video/poster_facefusion.jpg" width="448" height="448" controls playsinline preload="none"></video>
+      <figcaption><span class="code">FVFA</span>fake face (<span class="gen-name">FaceFusion</span>), fake voice (Seed-VC)</figcaption>
+    </figure>
+  </div>
+      <p class="table-note">Web copies for viewing; the released clips are unchanged.</p>
+    </section>
+
+    <section class="section" id="tasks">
+      <h2>Evaluation Tasks</h2>
+      <p class="section-intro">Each card shows the right answer to one real test question.</p>
+      <div class="tasks">
+    <article class="tcard">
+      <div class="id">T1</div><h3>Audio-video authenticity</h3>
+      <p class="q">Which part of this audio-visual clip, if any, is AI-generated or manipulated?</p>
+      <ul class="opts"><li>the video</li><li>the audio</li><li class="ok">both</li><li>neither</li></ul>
+      <p class="meta">91,830 questions · frames and sound</p>
+    </article>
+    <article class="tcard">
+      <div class="id">T2</div><h3>Manipulation type</h3>
+      <p class="q">Which part of this video, if any, was generated or altered by AI?</p>
+      <ul class="opts"><li>real</li><li>face swap</li><li class="ok">full-body swap</li><li>fully generated</li></ul>
+      <p class="meta">45,915 questions · frames</p>
+    </article>
+    <article class="tcard">
+      <div class="id">T3</div><h3>Identity verification</h3>
+      <p class="q">Is the face (or voice) in clip 1 real or fake, and is it the same person as in clip 2?</p>
+      <ul class="opts"><li>real, same person</li><li>real, different person</li><li>fake of this person</li><li class="ok">fake of a different person</li></ul>
+      <p class="meta">151,842 questions · two clips, face or voice</p>
+    </article>
+    <article class="tcard">
+      <div class="id">T4</div><h3>Explanation</h3>
+      <p class="q">Which parts of this audio-visual clip, if any, were generated or altered by AI, where, and what in the clip shows it?</p>
+      <blockquote class="quote">“Only the inner face of the video is AI-generated; the hair, head, body and background are untouched. … While she speaks, her facial features look somewhat soft and blurry …”</blockquote>
+      <p class="meta">11,330 questions · MOZAIC-Small · judge score out of 10</p>
+    </article>
+  </div>
+    </section>
+
+    <section class="section" id="results">
+      <h2>Results</h2>
+      <p class="section-intro">T1 to T3: accuracy on the full test split. T4: judge score out of 10 on the MOZAIC-Small test split. The fine-tuned model is a single training run.</p>
+      <div class="table-wrap">
+        <table class="table">
+      <thead><tr><th>Model</th><th>T1</th><th>T2</th><th>T3</th><th>T4</th></tr></thead>
+      <tbody>
+        <tr><td>Qwen3-Omni-30B-A3B</td><td>18.52%</td><td>34.13%</td><td>28.22%</td><td>4.22</td></tr>
+        <tr><td>Qwen2.5-Omni-7B</td><td>19.63%</td><td>33.60%</td><td>32.21%</td><td>4.42</td></tr>
+        <tr><td>MiniCPM-o 4.5</td><td>24.00%</td><td>33.48%</td><td>32.26%</td><td>4.39</td></tr>
+        <tr><td>Nemotron 3 Nano Omni</td><td>18.70%</td><td>33.94%</td><td>32.92%</td><td>4.50</td></tr>
+        <tr><td>Gemma 4 12B</td><td>18.18%</td><td>33.27%</td><td>29.65%</td><td>4.12</td></tr>
+        <tr><td>OmniVinci</td><td>16.63%</td><td>30.05%</td><td>30.04%</td><td>4.17</td></tr>
+        <tr><td>Uni-MoE-2.0-Omni</td><td>29.81%</td><td>31.21%</td><td>26.08%</td><td>4.33</td></tr>
+        <tr><td>Ola-7B</td><td>32.50%</td><td>32.71%</td><td>22.45%</td><td>4.02</td></tr>
+        <tr><td>VITA-1.5</td><td>17.35%</td><td>31.99%</td><td>22.51%</td><td>4.52</td></tr>
+        <tr><td>VideoLLaMA2-AV</td><td>30.88%</td><td>29.62%</td><td>29.19%</td><td>4.41</td></tr>
+        <tr><td>Gemini 3.1 Pro</td><td>35.58%</td><td>36.68%</td><td>47.51%</td><td>5.15</td></tr>
+        <tr><td>Gemini 3.8 Flash</td><td>31.56%</td><td>40.98%</td><td>40.92%</td><td>5.09</td></tr>
+        <tr class="highlight"><td>Qwen2.5-Omni-7B + LoRA, trained on MOZAIC-Small (single run)</td><td>83.8%</td><td>78.3%</td><td>75.6%</td><td>6.98</td></tr>
+        <tr><td>Most common answer</td><td>33.39%</td><td>33.22%</td><td>30.04%</td><td>&#8211;</td></tr>
+      </tbody>
+    </table>
+      </div>
+    </section>
+
+    <section class="section" id="generalization">
+      <h2>Generalization</h2>
+      <p class="section-intro">Per generator, zero-shot models barely beat chance; trained detectors do well in distribution but lose much of it on a generator held out of training.</p>
+      <div class="figure-grid-2 gen-figs">
+        <figure class="figure" aria-labelledby="pergen-cap">
+    <img src="assets/fig/pergen_heatmap.png" width="1411" height="616" alt="Heatmap of T1 balanced accuracy per generator (FaceFusion, Wan2.2-S2V, Wan2.2-Animate, Seed-VC) for the twelve zero-shot models: open models stay within a few points of 50%, the Gemini models reach 59 to 69% on the video generators and at most 55% on Seed-VC" loading="lazy">
+    <figcaption id="pergen-cap"><b>T1 balanced accuracy (%) per generator</b> for every zero-shot model on the MOZAIC test set. Each cell averages the fake-part recall for that generator with the real-part recall of the same modality (video; audio for Seed-VC), so a constant answer scores 50%. Red is below chance, blue above.</figcaption>
+  </figure>
+      <figure class="figure" aria-labelledby="unseen-cap">
+    <img src="assets/fig/seen_unseen.png" width="976" height="774" alt="Dumbbell chart of macro-F1 for AV-HuBERT, HAVIC, PE-AV and Qwen2.5-Omni when each generator is seen in training and when it is held out: the largest drops are on FaceFusion" loading="lazy">
+    <figcaption id="unseen-cap"><b>Generalization to unseen generators.</b> Macro-F1 (four classes) of each detector when a generator is seen in training (blue) and held out of training (pink); each group holds out one generator and is scored on its clips. The line length shows the drop.</figcaption>
+  </figure>
+      </div>
+      <div class="key-findings">
+        <h3 class="h3">Key findings</h3>
+        <ul class="bullets">
+          <li><strong>Near chance, zero-shot.</strong> For the open models, 36 of 40 model–generator cells lie within four points of chance; the converted voice is the blind spot for every model.</li>
+          <li><strong>A new face swap breaks the detectors.</strong> With FaceFusion held out of training, T1 accuracy on its clips falls from 98.6% to 78.3% for PE-AV and from 78.9% to 56.4% for Qwen2.5-Omni; holding out a whole-frame generator costs PE-AV less than a point.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="explanations">
+      <h2>What the Explanations Say</h2>
+      <p class="section-intro">T4 asks a model to say which part of a clip is fake, where, and what shows it. Four test clips, two models.</p>
+      <figure class="figure figure-large" aria-labelledby="t4-cap">
+    <img src="assets/fig/t4_qualitative.png" width="1169" height="385" alt="Four MOZAIC-Small test clips (real; face swap with real voice; real video with converted voice; fully generated) with the verdicts of Gemini 3.1 Pro zero-shot and the fine-tuned Qwen2.5-Omni, each marked against the reference with the judge score" loading="lazy">
+    <figcaption id="t4-cap"><b>Gemini 3.1 Pro (zero-shot) and Qwen2.5-Omni after LoRA.</b> Green: real; red: generated; dashed box: swapped face. Each chip gives the model's claim about the video (V) or the audio (A), a mark against the reference, and the judge's 0 to 10 score.</figcaption>
+  </figure>
+      <div class="key-findings">
+        <h3 class="h3">Key findings</h3>
+        <ul class="bullets">
+          <li><strong>Open zero-shot models say "real".</strong> for 96 to 100% of videos, whatever they are. On the judge, none beats a fixed always-real answer.</li>
+          <li><strong>Gemini 3.1 Pro over-claims the inner face.</strong> on about half of all clips, real ones included, and never names a generated whole frame.</li>
+          <li><strong>Fine-tuning fixes the voice, not the region.</strong> Qwen2.5-Omni gets the voice right (97% of real, 78% of converted) but calls most videos whole-frame generated.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section-conclusion" id="conclusion">
+      <h2>Conclusion</h2>
+      <div class="conclusion-content">
+        <p>MOZAIC pairs every source clip with all four real/fake combinations of video and audio, plus a vocoded control, so a score can be traced to the video or the audio a model actually uses. Measured this way, today's omni-modal LLMs are near chance zero-shot: the best reaches 35.6% on the four-way task, fake voices mostly go unnoticed, and the open models' free-text explanations score below a baseline that calls everything real. Trained detectors reach up to 98.4% in distribution, but the best one loses 20 points on a held-out face-swap generator.</p>
+        <div class="conclusion-footer"><p><b>Next steps.</b> A second voice converter, a sharper face swap, a version with real-world compression, and more languages.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="quickstart">
+      <h2>Quick Start</h2>
+      <p class="section-intro">The repository has the code to generate the clips, build the questions, train the baselines, and run and score every model; each folder has its own README.</p>
+      <div class="code-card">
+        <button class="code-copy" type="button" data-target="code-quick" aria-label="Copy the commands">Copy</button>
+        <pre id="code-quick"><code>git clone https://github.com/VectorInstitute/mozaic.git
+cd mozaic && uv sync
+
+# run a model on T1, then score its answers (no model needed to score)
+python -m mozaic.evaluation.run_inference --config gemini_3_8_flash --task t1
+python -m mozaic.evaluation.run_eval --config gemini_3_8_flash --task t1
+
+# T4 on MOZAIC-Small: answers, the judge, then the scores
+python -m mozaic.evaluation.run_inference --config gemini_3_8_flash --task t4 --subset small
+python -m mozaic.evaluation.judge.run_judge --config gemini_3_8_flash --task t4 --subset small
+python -m mozaic.evaluation.run_eval --config gemini_3_8_flash --task t4 --subset small
+
+# train a baseline on MOZAIC-Small
+torchrun --nproc_per_node=4 -m mozaic.training.run_train --config avhubert/t1_ln --subset small</code></pre>
+      </div>
+    </section>
+
+    <section class="section band" id="access">
+      <div class="ack-content">
+        <h2>Access and Licence</h2>
+        <p>The code is under the <a href="https://github.com/VectorInstitute/mozaic/blob/main/LICENSE" target="_blank" rel="noopener">Apache License 2.0</a>. The dataset is on <a href="https://huggingface.co/datasets/vector-institute/Mozaic" target="_blank" rel="noopener">Hugging Face</a> under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>. Anyone shown in a clip can ask for it to be removed.</p>
+      </div>
+    </section>
+
+    <section class="section" id="bibtex-sec">
+      <h2>BibTeX</h2>
+      <p class="section-intro">To cite MOZAIC:</p>
+      <div class="bibtex-section">
+        <button class="btn btn-small btn-copy" type="button" data-target="bibtex">Copy BibTeX</button>
+        <pre class="bibtex" id="bibtex"><code>@misc{mozaic2026,
+  title  = {{MOZAIC}: An Audio-Video Deepfake Benchmark for Telling What Is Fake},
+  author = {Raza, Shaina and Hafez, Mohamed and Radwan, Ahmed and Elgazzar, Khalid and Hume, Kathryn},
+  year   = {2026},
+  note   = {Project page}
+}</code></pre>
+      </div>
+    </section>
+
+    <section class="section" id="acknowledgements">
+      <div class="ack-content">
+        <h2>Acknowledgements</h2>
+        <p>Resources used in preparing this research were provided, in part, by the Province of Ontario, the Government of Canada through CIFAR, and companies sponsoring the Vector Institute (<a href="https://vectorinstitute.ai/#partners" target="_blank" rel="noopener">vectorinstitute.ai/#partners</a>).</p>
+        <p>This research was funded by the European Union's Horizon Europe research and innovation programme under the AIXPERT project (Grant Agreement No. 101214389), which aims to develop an agentic, multi-layered, GenAI-powered framework for creating explainable, accountable, and transparent AI systems.</p>
+        <div class="ack-logos">
+          <img src="assets/logo_vector.png" alt="Vector Institute">
+          <img src="assets/logo_aixpert.png" alt="AIXPERT">
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3 class="h3">Contact</h3>
+          <p>For questions, collaborations, or dataset access requests, please contact:<br><a href="mailto:shaina.raza@vectorinstitute.ai">shaina.raza@vectorinstitute.ai</a></p>
+          <p>Report issues: <a href="https://github.com/VectorInstitute/mozaic/issues" target="_blank" rel="noopener">GitHub Issues</a></p>
+        </div>
+        <div class="footer-section">
+          <h3 class="h3">Links</h3>
+          <ul class="footer-links">
+            <li><a href="https://huggingface.co/datasets/vector-institute/Mozaic" target="_blank" rel="noopener">Dataset (Hugging Face)</a></li>
+            <li><a href="https://github.com/VectorInstitute/mozaic" target="_blank" rel="noopener">GitHub Repository</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Vector Institute, MOZAIC</p>
+        <p><a href="#top">Back to top ↑</a></p>
+      </div>
+    </footer>
+  </main>
+
+<script>
+
+  var videos = document.querySelectorAll(".watch video");
+  videos.forEach(function (video) {
+    video.addEventListener("play", function () {
+      videos.forEach(function (other) { if (other !== video) other.pause(); });
+    });
+  });
+  document.querySelectorAll(".gen-switch button").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var gen = button.dataset.gen;
+      document.querySelectorAll(".gen-switch button").forEach(function (other) {
+        other.setAttribute("aria-pressed", String(other === button));
+      });
+      document.querySelectorAll(".watch video.fake").forEach(function (video) {
+        video.pause();
+        video.poster = "assets/video/poster_" + gen + ".jpg";
+        video.src = "assets/video/" + video.dataset.kind + "_" + gen + ".mp4";
+      });
+      document.querySelectorAll(".watch .gen-name").forEach(function (name) { name.textContent = button.textContent; });
+    });
+  });
+
+
+  var nav = document.getElementById("nav"), toggle = document.getElementById("navToggle");
+  toggle.addEventListener("click", function () {
+    var open = nav.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", String(open));
+  });
+  var links = Array.prototype.slice.call(nav.querySelectorAll("a"));
+  links.forEach(function (a) { a.addEventListener("click", function () { nav.classList.remove("open"); }); });
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) links.forEach(function (a) { a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id); });
+    });
+  }, { rootMargin: "-40% 0px -55% 0px" });
+  links.forEach(function (a) { var t = document.querySelector(a.getAttribute("href")); if (t) observer.observe(t); });
+  document.querySelectorAll("[data-target]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var text = document.getElementById(button.dataset.target).textContent, label = button.textContent;
+      navigator.clipboard.writeText(text).then(function () {
+        button.textContent = "Copied";
+        setTimeout(function () { button.textContent = label; }, 1600);
+      });
+    });
+  });
+</script>
+</body>
+</html>

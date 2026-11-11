@@ -1,0 +1,11 @@
+# Copy this file to paths.yaml (git-ignored) and set the two folders.
+
+# The VoxCeleb2 download: holds dev/mp4/<id>/<video>/<clip>.mp4 and meta/vox2_meta.csv.
+voxceleb2: /path/to/voxceleb2
+
+# Where generation reads and writes:
+#   voxceleb2/      clip list, identity split, extracted voice audio
+#   new_generated/  pair lists, crops, renders, voices, final clips, gate reports
+#   mozaic/         the release folder
+#   _mozaic_build/  the release build record
+data: /path/to/data_generation

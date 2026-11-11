@@ -1,0 +1,76 @@
+# Settings that made MOZAIC. Re-making the release needs every value as it is.
+
+seed: 42                      # identity split, pair draw, and the seed of every render and voice job
+
+inventory:                    # the list of VoxCeleb2 clips
+  concurrency: 32             # ffprobe processes per shard
+  ffprobe_timeout_s: 60
+  min_clip_duration_s: 3.0    # shorter clips are dropped as too short
+
+split:                        # people are split once, before any pair is drawn
+  ratio: [0.70, 0.10, 0.20]   # train, val, test
+  stratify_key: gender
+
+audio:
+  sample_rate_hz: 16000
+  channels: 1
+  extract_concurrency: 16
+
+pairs:                        # rings of same-gender people; each person borrows a face/voice from the others
+  ring_size: 5
+  ring_genders: [m, f]
+  folders_per_celeb: 4
+  clips_per_folder: 2
+  min_driver_clip_margin_s: 0.5
+  same_speaker_arm_frac: 0.10
+  self_drive_control_frac: 0.10
+  vocoded_real_frac: 1.0
+
+draw:                         # the five pair lists of the release, drawn in this order (wan77 first)
+  splits: [train, val, test]
+  eligibility_frames: [153, 77]   # a person needs clips long enough for both lengths
+  rings_per_split_gender: {train: 70, val: 15, test: 15}
+  reserve_rings_per_split_gender: {train: 14, val: 3, test: 3}   # drawn but never used; keeps the draw identical
+  builds:
+    - {build_id: bulk_v1_wan77, video_method: animate, crop_frames: 77}       # draws the rings
+    - {build_id: bulk_v1_ff77, video_method: facefusion, crop_frames: 77, rings_from: bulk_v1_wan77}
+    - {build_id: bulk_v1_s2v77, video_method: s2v, crop_frames: 77, rings_from: bulk_v1_wan77}
+    - {build_id: bulk_v1_ff153, video_method: facefusion, crop_frames: 153, rings_from: bulk_v1_wan77}
+    - {build_id: bulk_v1_s2v153, video_method: s2v, crop_frames: 153, rings_from: bulk_v1_wan77}
+
+clips:
+  fps: 25
+  size: 224                   # square
+  crop_frames: 77             # default length; a build may set 153
+  crop_start_s: 0.0
+  crop_concurrency: 8
+
+reference_frame:              # the face photo each video generator starts from
+  at_s: 1.0                   # fallback time when no frame can be scored
+  candidates: 24              # frames scored per clip with OpenCV's face and eye detectors
+
+mux:                          # the one mux every shipped clip goes through, real ones too
+  video_codec: libx264
+  crf: 18
+  preset: medium
+  pixel_format: yuv420p
+  scale_flags: bicubic
+  resample_via: 624           # every clip is resized through 624 px, then to 224 px
+  luma: {target: 72.0, tolerance: 2.0, gamma_min: 0.20, gamma_max: 5.00}
+  chroma: {target: 17.0, tolerance: 0.75, source_floor: 8.0, gain_min: 0.20, gain_max: 4.00}
+  refine_passes: 2
+  loudness: {integrated_lufs: -23.0, true_peak_ceiling_db: -2.0, max_gain_db: 30.0}
+  audio: {codec: pcm_s16le, bitrate: null, frame_samples: 1024, tail_pad_samples: 160}
+  container: {format: mov, ext: .mov}
+
+gates:                        # keep/drop limits; A = 77-frame pairs, B = 153-frame pairs
+  A: {arcface_excess_cap: 0.0977, arcface_target_floor: 0.1442, arcface_target_abs_min: 0.3, sv_floor: 0.2496,
+      sync_real_floor: 3.411, sync_fake_margin: 3.761}
+  B: {arcface_excess_cap: 0.0977, arcface_target_floor: 0.1442, arcface_target_abs_min: 0.3, sv_floor: 0.3048,
+      sync_real_floor: 4.1096, sync_fake_margin: 3.8225}
+  # sync_*: the lip-sync spot check (SyncNet confidence) on the first 20 pairs of each batch: every scored clip at
+  # least sync_real_floor, and a fake clip at most sync_fake_margin under its own pair's real clip
+  picture: {flicker_max: {A: 0.993, B: 0.843}, melt_ratio_max: 2.0, sharp_ratio_min: 0.5}
+  family_exceptions:          # checks a family skips, and why (see gates/README.md)
+    facefusion: [arcface_excess]
+    s2v: [picture_melting]

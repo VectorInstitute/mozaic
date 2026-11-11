@@ -1,0 +1,21 @@
+# Everything Gemma 4 with vLLM needs: the same versions as models/mllms/nemotron_omni_vllm (one environment
+# serves both; vLLM 0.28.0 runs Gemma 4 natively). Its own environment on uv's Python, with the CUDA 12.9
+# builds of vLLM and torch (PyPI's torch 2.13 needs CUDA 13), see README.md:
+#   uv venv .venv_gemma4_vllm --python 3.12.12 --managed-python
+#   uv pip install --python .venv_gemma4_vllm/bin/python --torch-backend cu129 \
+#       --extra-index-url https://wheels.vllm.ai/0.28.0/cu129 -e . \
+#       -r src/mozaic/evaluation/models/mllms/gemma4_vllm/requirements.txt
+vllm[audio]==0.28.0         # its CUDA 12.9 build, from the extra index above; [audio]: the sound readers
+torch==2.13.0               # CUDA 12.9 build: uv pip install --torch-backend cu129
+torchvision==0.28.0
+torchaudio==2.11.0
+transformers==5.20.2
+flashinfer-python==0.6.16.post3
+opencv-python-headless==5.0.0.93   # vLLM's video reader
+av==19.0.2                  # vLLM's sound reader (PyAV)
+soundfile==0.14.0
+soxr==1.1.0
+scipy==1.18.1
+mistral-common==1.12.0
+numpy==2.3.5
+pillow==13.0.0

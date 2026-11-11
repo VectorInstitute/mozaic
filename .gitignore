@@ -1,0 +1,36 @@
+.env
+.venv*
+__pycache__/
+*.pyc
+*.egg-info/
+# data never lives in the repo
+*.mov
+*.mp4
+*.wav
+qas/
+results/
+checkpoints/
+logs/
+
+# personal notes
+/notes/
+
+# the original code of models we wrap (each model's README links it), never pushed
+external-repos/*
+!external-repos/.gitkeep
+!external-repos/README.md
+ablations/seeds/configs/
+ablations/lr_sweep/configs/
+ablations/epoch_sweep/configs/
+ablations/unseen_generators/configs/
+ablations/frame_budget/configs/
+ablations/modality/configs/
+
+# local folders for data generation
+src/mozaic/data_generation/configs/paths.yaml
+
+# the dataset and the model weights, downloaded locally (the empty folders stay)
+/data/*
+!/data/.gitkeep
+/models_weights/*
+!/models_weights/.gitkeep

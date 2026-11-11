@@ -1,0 +1,26 @@
+# The SyncNet environment that made the lip-sync scores (Python 3.10, CPU only). Install with uv:
+#   uv venv --python python3.10 --seed .venv_syncnet
+#   uv pip install --python .venv_syncnet --index-strategy unsafe-best-match -r src/mozaic/data_generation/gates/requirements_syncnet.txt
+# SyncNet's own code (joonson/syncnet_python, commit 907c0b5) goes into the git-ignored external-repos/syncnet_python,
+# with its two weight files (gates/README.md). Some batches were scored in a second environment made by the same
+# steps; its unpinned packages (opencv-contrib-python, numpy, scipy, tqdm) may differ.
+--extra-index-url https://download.pytorch.org/whl/cpu
+click==8.2.1
+filelock==3.32.3
+fsspec==2026.7.0
+jinja2==3.1.6
+markupsafe==3.0.3
+mpmath==1.3.0
+networkx==3.4.2
+numpy==2.2.6
+opencv-contrib-python==5.0.0.93
+pillow==12.3.0
+platformdirs==4.11.8
+python-speech-features==0.6
+scenedetect==0.6.7.1
+scipy==1.15.3
+sympy==1.13.1
+torch==2.5.1+cpu
+torchvision==0.20.1+cpu
+tqdm==4.70.1
+typing-extensions==4.16.0

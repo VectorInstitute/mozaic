@@ -1,0 +1,24 @@
+# The T4 judge (run_judge.py): per clip, gpt-5.4-mini scores the predicted video and audio explanation
+# against the reference (prompt.py), and an embedding model gives the cosine of each pair. The judge goes
+# through an OpenAI-compatible endpoint (base_url; https://api.openai.com/v1 is OpenAI's public API), with the key from
+# the .env of common/config.yaml; the embedder
+# runs here, from its local weights (sentence-transformers).
+
+judge:
+  model_version: gpt-5.4-mini       # pinned name, never a -latest alias; never a model being judged
+  base_url: https://api.openai.com/v1
+  api_key_env: OPENAI_API_KEY
+  env_file: null                    # null = env_file from common/config.yaml
+  generation:
+    max_completion_tokens: 4096     # per call, counts reasoning too
+    reasoning_effort: low
+
+embedder:                           # null (or --no-embedder): no cosine
+  model_version: sentence-transformers/all-MiniLM-L6-v2   # for the cosine of reference and prediction, per part
+  weights: models_weights/all-MiniLM-L6-v2                # its local copy: no download
+  device: null                      # null: the GPU if there is one, else the CPU (a small model: both are fine)
+
+workers: 8                          # clips judged at once
+retry:
+  max_attempts: 3                   # per call, with backoff
+stop_after_failures: 3              # clips in a row whose calls failed before the run stops

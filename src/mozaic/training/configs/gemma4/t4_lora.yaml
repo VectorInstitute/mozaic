@@ -1,0 +1,32 @@
+model: gemma4
+task: t4
+experiment_name: lora_32f_224       # training_small/gemma4/lora_32f_224/t4/; change it when a setting changes
+weights: models_weights/gemma-4-12b-it   # the copy evaluation uses, read only
+
+questions:                          # T4 exists on MOZAIC-Small only: --subset small
+  train:
+    file: t4_train.jsonl
+  val:
+    file: t4_val.jsonl
+
+eval_config: gemma4_vllm/t4/lora_trainsmall   # evaluation/configs: its generation (greedy, 8192 tokens) for validation
+
+# The input, as evaluation's gemma4_vllm/t1/zeroshot.yaml, with the sound in [-1, 1] (gemma4_inputs.py)
+frames: 32                          # evenly spaced, full frame
+audio_sample_rate: 16000
+
+train:                              # the protocol's recipe, as Qwen2.5-Omni's T4
+  epochs: 3
+  lr: 1.0e-4
+  weight_decay: 0.01                # AdamW, no schedule
+  batch_size: 32                    # per optimizer step, over all GPUs
+  micro_batch_size: 1               # per GPU per forward
+  workers: 8                        # per GPU
+  seed: 0
+  select_on: text.both.rouge_l      # t4_metrics' ROUGE-L of both parts: no judge call per epoch
+
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target: ".*language_model.*\\.(q_proj|k_proj|v_proj|o_proj|gate_proj|up_proj|down_proj)"  # the language model's; towers stay frozen

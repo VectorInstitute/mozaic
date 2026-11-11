@@ -1,0 +1,51 @@
+model: qwen2_5_omni
+task: t1
+experiment_name: lora_32f_224       # training/qwen2_5_omni/lora_32f_224/t1/; change it when a setting changes
+weights: models_weights/qwen2.5-omni-7b   # the copy evaluation uses, read only
+
+questions:                          # the same filters as evaluation (configs/qwen2_5_omni_vllm.yaml)
+  train:
+    file: t1_train.jsonl
+    filters:
+      arms: [vocoded]               # real-voice clips only; fake-voice clips have one arm and are always kept
+  val:
+    file: t1_val.jsonl
+    filters:
+      arms: [vocoded]
+
+eval_config: qwen2_5_omni_vllm/t1/zeroshot      # evaluation/configs: its generation (greedy, max_tokens) for validation
+
+# The input, as evaluation's qwen2_5_omni_vllm/t1/zeroshot.yaml (qwen_omni_inputs.py reads clips with its reader)
+frames: 32                          # evenly spaced, full frame
+frame_size: 224                     # the clips' own 224 x 224
+audio_sample_rate: 16000            # the complete audio, inside the video (use_audio_in_video)
+
+train:                              # the protocol's recipe, as the classifiers, but 3 epochs
+  epochs: 3                         # LoRA SFT of an LLM: a few epochs (Skyra: 5), each validated
+  lr: 1.0e-4
+  weight_decay: 0.01                # AdamW, no schedule
+  batch_size: 32                    # per optimizer step, over all GPUs
+  micro_batch_size: 1               # per GPU per forward; memory only
+  workers: 8                        # per GPU
+  seed: 0
+  select_on: macro.f1               # as the classifiers
+
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target: all                       # every linear layer of the language model; the vision and audio towers
+                                    # and the projector stay frozen (LLaMA-Factory leaves frozen towers out)
+
+llamafactory:                       # passed to LLaMA-Factory as they are
+  freeze_vision_tower: true         # for Qwen2.5-Omni: the vision and the audio tower
+  freeze_multi_modal_projector: true
+  cutoff_len: 2048                  # 1,024 video tokens (32 frames at 224) + the sound + prompt + reply
+  preprocessing_num_workers: 16
+  logging_steps: 10
+  ddp_timeout: 180000000
+
+log:
+  wandb: true
+  project: mozaic
+  entity: null                      # W&B team or user; null: the logged-in account's default

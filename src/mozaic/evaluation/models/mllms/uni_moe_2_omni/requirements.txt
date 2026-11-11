@@ -1,0 +1,37 @@
+torch==2.5.1                # the authors' versions (their README and requirement.txt), CUDA 12.1 build:
+torchvision==0.20.1         #   uv pip install --torch-backend cu121
+torchaudio==2.5.1
+transformers==4.51.3
+tokenizers==0.21.4
+accelerate==1.2.1
+deepspeed==0.15.4           # its mixture-of-experts layers (built without its CUDA ops: --no-build-isolation-package deepspeed);
+                            # when imported on a GPU node it runs `nvcc -V`: cuda_home in the config (see the README)
+huggingface-hub==0.34.2
+safetensors==0.5.3
+# its picture, sound and generation parts ask for FlashAttention 2: their 2.6.0.post1 has no ready-made wheel for
+# torch 2.5 and Python 3.11, so the nearest that has one (no compiling)
+flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.4.post1/flash_attn-2.7.4.post1+cu12torch2.5cxx11abiFALSE-cp311-cp311-linux_x86_64.whl
+# imported when the model is built, by its image-generation part (switched off, but its code is loaded)
+diffusers==0.30.2
+fairscale==0.4.13
+kornia==0.7.4
+kornia_rs==0.1.9
+clip @ git+https://github.com/openai/CLIP.git@dcba3cb2e2827b402d2701e7e1c7d9fed8a20ef1
+setuptools==80.9.0          # clip's setup imports pkg_resources, which setuptools 81 dropped (--no-build-isolation-package clip)
+ftfy==6.3.1
+matplotlib==3.10.5
+h5py==3.12.1
+timm==1.0.19
+torchdiffeq==0.2.5
+# its media code
+moviepy==2.2.1
+decord==0.6.0
+librosa==0.11.0
+soundfile==0.13.1
+einops==0.8.1
+numpy==1.26.4
+pillow==11.3.0
+scipy==1.16.1
+sentencepiece==0.2.1
+protobuf==5.29.5
+av==15.0.0                  # reads our frames and sound (their version)

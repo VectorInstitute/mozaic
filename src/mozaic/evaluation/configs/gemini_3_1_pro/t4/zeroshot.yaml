@@ -1,0 +1,28 @@
+# gemini_3_1_pro/t1/zeroshot.yaml for T4, zero-shot: its input unchanged; a T4-length answer
+model: gemini                       # code in models/api/gemini, results in results/gemini
+family: mllm                        # mllm (answers in text) or classifier (class probabilities)
+model_version: gemini-3.1-pro-preview
+api: interactions                   # Google's public Interactions API: each clip goes as one video
+base_url: https://generativelanguage.googleapis.com/v1beta
+api_key_env: GEMINI_API_KEY
+env_file: null                      # null = env_file from common/config.yaml
+
+experiment_name: zeroshot_32f_3_1_pro_test   # one folder per Gemini model: they share results/gemini
+
+# The same input as the open models
+frames: 32                          # Gemini takes 32 frames from each clip (fps = 32 / the clip's seconds)
+video_resolution: low               # 64 tokens per frame: Google's default for video, set so it cannot change
+audio_sample_rate: 16000            # t3 voice: each sound alone, as a WAV; t1 hears the clip's own sound in the video
+
+generation:                         # the Interactions API's generation_config
+  temperature: 0.0                  # greedy, as the open models
+  max_output_tokens: 8192           # per call, thinking included; T4's limit (T1-T3: 2048)
+  thinking_level: low               # the lowest Pro takes (it cannot turn thinking off); the same for both models
+
+retry:
+  max_attempts: 3                   # per question, with backoff
+stop_after_failures: 3              # failed questions in a row before the run stops
+
+tasks:                              # T4 on MOZAIC-Small's test split
+  t4:
+    file: t4_test.jsonl             # --subset small only (T4 exists on Small only); never t4_golden.jsonl
