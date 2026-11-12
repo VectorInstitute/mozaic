@@ -49,8 +49,8 @@
         </div>
         <div class="hero-figure">
           <figure>
-            <img src="assets/fig/teaser.png" width="2100" height="1225" alt="MOZAIC overview: paired identities, video and voice generation, quality control, the six released conditions per pair, identity-disjoint splits, and the four evaluation tasks">
-            <figcaption><strong>Figure 1. MOZAIC.</strong> <em>Top:</em> a real clip of person A is paired with a same-gender person B. Three video generators (FaceFusion, Wan2.2-S2V, Wan2.2-Animate) and one voice converter (Seed-VC) create the fakes, and pairs that fail quality control are dropped. Each pair is released in six conditions: real or fake video with real, vocoded or fake audio. <em>Bottom:</em> the four tasks ask which modality is fake (T1), how the video was made (T2), whether a query clip is real and shows the same person as a reference (T3), and for a written explanation (T4).</figcaption>
+            <img src="assets/fig/teaser.png" width="2186" height="1275" alt="MOZAIC overview: paired identities, video and voice generation, quality control, the six released conditions per pair, identity-disjoint splits, and the four evaluation tasks">
+            <figcaption><strong>Figure 1. MOZAIC.</strong> <em>Top:</em> a real clip of person A is paired with a same-gender person B; three video generators (FaceFusion, Wan2.2-S2V, Wan2.2-Animate) and one voice converter (Seed-VC) create the fakes, pairs that fail quality control are dropped, and each pair is released in six conditions (real or fake video with real, vocoded or fake audio). <em>Bottom:</em> the four tasks: which modality is fake (T1), how the video was made (T2), whether a query clip is real and shows the reference person (T3), and a written explanation (T4).</figcaption>
           </figure>
         </div>
       </div>
@@ -78,7 +78,7 @@
           </ul>
       <figure class="figure figure-large" aria-labelledby="stats-cap">
         <div class="figure-grid-2 stats-fig">
-          <div><img src="assets/fig/Videos_Sunburst_A.png" width="2188" height="2253" alt="Sunburst of clips by label (RVRA 30,028, RVFA 15,014, FVRA, FVFA) and by generator (FaceFusion, Wan2.2-S2V, Wan2.2-Animate)" loading="lazy"><p class="sub-cap">(a) Clips by label and generator.</p></div>
+          <div><img src="assets/fig/Videos_Sunburst_A.png" width="755" height="730" alt="Sunburst of clips by label (RVRA 30,028, RVFA 15,014, FVRA, FVFA) and by generator (FaceFusion, Wan2.2-S2V, Wan2.2-Animate)" loading="lazy"><p class="sub-cap">(a) Clips by label and generator.</p></div>
           <div><img src="assets/fig/C2_identity_transfer.png" width="650" height="490" alt="Bar chart: median similarity of each fake to source A (low, 0.01 to 0.14) and to target B (high, 0.50 to 0.87) for FaceFusion, Wan2.2-S2V, Wan2.2-Animate and Seed-VC" loading="lazy"><p class="sub-cap">(b) Identity transfer.</p></div>
         </div>
         <figcaption id="stats-cap"><strong>MOZAIC statistics.</strong> (a) Clips by label (inner ring) and generator (outer ring). (b) Median similarity of each fake to the source A and the target B, face for video generators and voice for Seed-VC: every generator moves the identity to B.</figcaption>
@@ -97,7 +97,7 @@
       </div>
       <figure class="figure figure-large" aria-labelledby="qual-cap">
         <img src="assets/fig/qualitative.png" width="1360" height="540" alt="Two pairs (a woman and a man), each shown as the real recording, FaceFusion, Wan2.2-S2V and Wan2.2-Animate: frames at 0 s and 3 s, a close-up, and the changed pixels in red" loading="lazy">
-        <figcaption id="qual-cap"><strong>What each generator changes.</strong> Same real frames of A, one generator per row: FaceFusion replaces only the inner face; Wan2.2-S2V and Wan2.2-Animate redraw the whole frame, driven by A's voice and A's motion. Last column: changed pixels in red.</figcaption>
+        <figcaption id="qual-cap"><strong>What each generator changes.</strong> One 3 s test pair per generator (rows), from the same real frames of A. FaceFusion replaces only the inner face; Wan2.2-Animate and Wan2.2-S2V redraw the whole frame, driven by A's motion and voice, respectively. Last column: target B (top) and changed pixels (red).</figcaption>
       </figure>
       <p class="section-intro" style="margin-top:1.5rem">Clips are 3.08 s (77 frames) or 6.12 s (153 frames), 224×224 at 25 fps, with 16 kHz sound. The splits are by person: 700, 150 and 150 identities in train, val and test (96,957, 20,553 and 20,235 clips), half men and half women in each. MOZAIC-Small has 16,995 clips (21.0 hours) from 1,858 whole pairs of the same 1,000 identities, with 47,087 questions for T1 to T4.</p>
     </section>
@@ -110,13 +110,14 @@
     <button type="button" data-gen="s2v" aria-pressed="false">S2V</button>
     <button type="button" data-gen="animate" aria-pressed="false">Animate</button>
   </div>
+  <p class="table-note" style="text-align:center;margin:-0.5rem 0 1rem">Animate shows another test pair, in all four versions.</p>
   <div class="watch">
     <figure class="clip t-rvra">
-      <video src="assets/video/rvra.mp4" poster="assets/video/poster_real.jpg" width="448" height="448" controls playsinline preload="none"></video>
+      <video class="real" data-kind="rvra" src="assets/video/rvra.mp4" poster="assets/video/poster_real.jpg" width="448" height="448" controls playsinline preload="none"></video>
       <figcaption><span class="code">RVRA</span>real face, real voice</figcaption>
     </figure>
     <figure class="clip t-rvfa">
-      <video src="assets/video/rvfa.mp4" poster="assets/video/poster_real.jpg" width="448" height="448" controls playsinline preload="none"></video>
+      <video class="real" data-kind="rvfa" src="assets/video/rvfa.mp4" poster="assets/video/poster_real.jpg" width="448" height="448" controls playsinline preload="none"></video>
       <figcaption><span class="code">RVFA</span>real face, fake voice (Seed-VC)</figcaption>
     </figure>
     <figure class="clip t-fvra">
@@ -194,11 +195,11 @@
       <div class="figure-grid-2 gen-figs">
         <figure class="figure" aria-labelledby="pergen-cap">
     <img src="assets/fig/pergen_heatmap.png" width="1411" height="616" alt="Heatmap of T1 balanced accuracy per generator (FaceFusion, Wan2.2-S2V, Wan2.2-Animate, Seed-VC) for the twelve zero-shot models: open models stay within a few points of 50%, the Gemini models reach 59 to 69% on the video generators and at most 55% on Seed-VC" loading="lazy">
-    <figcaption id="pergen-cap"><b>T1 balanced accuracy (%) per generator</b> for every zero-shot model on the MOZAIC test set. Each cell averages the fake-part recall for that generator with the real-part recall of the same modality (video; audio for Seed-VC), so a constant answer scores 50%. Red is below chance, blue above.</figcaption>
+    <figcaption id="pergen-cap"><b>T1 balanced accuracy (%) per generator</b> for every off-the-shelf model on the MOZAIC test set. Each cell averages the fake-part recall for that generator with the real-part recall of the same modality (video; audio for Seed-VC), so a constant answer scores 50% (chance). Red is below chance, blue above, saturating at ±10 points; bold marks the best model per generator.</figcaption>
   </figure>
       <figure class="figure" aria-labelledby="unseen-cap">
     <img src="assets/fig/seen_unseen.png" width="976" height="774" alt="Dumbbell chart of macro-F1 for AV-HuBERT, HAVIC, PE-AV and Qwen2.5-Omni when each generator is seen in training and when it is held out: the largest drops are on FaceFusion" loading="lazy">
-    <figcaption id="unseen-cap"><b>Generalization to unseen generators.</b> Macro-F1 (four classes) of each detector when a generator is seen in training (blue) and held out of training (pink); each group holds out one generator and is scored on its clips. The line length shows the drop.</figcaption>
+    <figcaption id="unseen-cap"><b>Generalization to unseen generators.</b> Macro-F1 (four classes) of each detector when a generator is seen in training (blue) and when it is held out from training (pink); each group holds out one generator and is scored on its clips. The line length shows the drop.</figcaption>
   </figure>
       </div>
       <div class="key-findings">
@@ -214,8 +215,8 @@
       <h2>What the Explanations Say</h2>
       <p class="section-intro">T4 asks a model to say which part of a clip is fake, where, and what shows it. Four test clips, two models.</p>
       <figure class="figure figure-large" aria-labelledby="t4-cap">
-    <img src="assets/fig/t4_qualitative.png" width="1169" height="385" alt="Four MOZAIC-Small test clips (real; face swap with real voice; real video with converted voice; fully generated) with the verdicts of Gemini 3.1 Pro zero-shot and the fine-tuned Qwen2.5-Omni, each marked against the reference with the judge score" loading="lazy">
-    <figcaption id="t4-cap"><b>Gemini 3.1 Pro (zero-shot) and Qwen2.5-Omni after LoRA.</b> Green: real; red: generated; dashed box: swapped face. Each chip gives the model's claim about the video (V) or the audio (A), a mark against the reference, and the judge's 0 to 10 score.</figcaption>
+    <img src="assets/fig/t4_qualitative.png" width="1169" height="446" alt="Four MOZAIC-Small test clips (real; face swap with real voice; real video with converted voice; fully generated) with the verdicts of Gemini 3.1 Pro zero-shot and the fine-tuned Qwen2.5-Omni, each marked against the reference with the judge score" loading="lazy">
+    <figcaption id="t4-cap"><b>T4 on four MOZAIC-Small test clips:</b> real, face swap with real voice, real video with converted voice, and fully generated. Borders, envelopes and pills: green real, red generated; dashed box: swapped face. Each chip gives what the model says about the video (V) or audio (A), a mark (check: matches the reference; wave: right verdict, wrong region; cross: contradicts it) and the judge's 0 to 10 score, followed by a verbatim excerpt.</figcaption>
   </figure>
       <div class="key-findings">
         <h3 class="h3">Key findings</h3>
@@ -330,6 +331,13 @@ torchrun --nproc_per_node=4 -m mozaic.training.run_train --config avhubert/t1_ln
         video.pause();
         video.poster = "assets/video/poster_" + gen + ".jpg";
         video.src = "assets/video/" + video.dataset.kind + "_" + gen + ".mp4";
+      });
+      // Animate shows another test pair: its real clips come with it
+      var own = gen === "animate" ? "_animate" : "";
+      document.querySelectorAll(".watch video.real").forEach(function (video) {
+        video.pause();
+        video.poster = "assets/video/poster_real" + own + ".jpg";
+        video.src = "assets/video/" + video.dataset.kind + own + ".mp4";
       });
       document.querySelectorAll(".watch .gen-name").forEach(function (name) { name.textContent = button.textContent; });
     });
