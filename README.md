@@ -187,12 +187,16 @@ or audio only, seeds, learning rate, epoch budget and a held-out generator ([`ab
 ## Citation
 
 ```bibtex
-@inproceedings{TO FILL,
-  title     = {{MOZAIC}: An Audio-Video Deepfake Benchmark for Telling What Is Fake},
-  author    = {Raza, Shaina and Hafez, Mohamed and Radwan, Ahmed and Elgazzar, Khalid and Hume, Kathryn},
-  booktitle = {TO FILL},
-  year      = {TO FILL}
+
+@article{raza2026mozaic,
+  title = {MOZAIC: An Audio-Video Deepfake Benchmark for Telling What Is Fake},
+  author = {Raza, Shaina and Hafez, Mohamed and Radwan, Ahmed and Elgazzar, Khalid and Hume, Kathryn},
+  journal = {Preprints},
+  year = {2026},
+  doi = {10.20944/preprints202611.2237.v1},
+  url = {https://www.preprints.org/manuscript/202611.2237}
 }
+
 ```
 
 ## Acknowledgements
