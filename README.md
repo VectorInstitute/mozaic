@@ -5,6 +5,14 @@
   </picture>
 </p>
 
+<p align="center">
+  <a href="https://www.preprints.org/manuscript/202611.2237"><strong>📄 Paper</strong></a>
+  &nbsp;|&nbsp;
+  <a href="https://vectorinstitute.github.io/mozaic/"><strong>🌐 Project Website</strong></a>
+  &nbsp;|&nbsp;
+  <a href="https://huggingface.co/datasets/vector-institute/Mozaic"><strong>🤗 Dataset</strong></a>
+</p>
+
 <h1 align="center">MOZAIC: An audio-video deepfake benchmark for telling <em>what</em> is fake</h1>
 
 <p align="center">
