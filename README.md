@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.preprints.org/manuscript/202611.2237"><strong>📄 Paper</strong></a>
+  <a href="https://arxiv.org/abs/2611.31301"><strong>📄 Paper</strong></a>
   &nbsp;|&nbsp;
   <a href="https://vectorinstitute.github.io/mozaic/"><strong>🌐 Project Website</strong></a>
   &nbsp;|&nbsp;
@@ -16,7 +16,7 @@
 <h1 align="center">MOZAIC: An audio-video deepfake benchmark for telling <em>what</em> is fake</h1>
 
 <p align="center">
-  Shaina Raza<sup>1</sup>, Mohamed Hafez<sup>1</sup>, Ahmed Radwan<sup>1</sup>, Khalid Elgazzar<sup>2</sup>,
+  Shaina Raza<sup>1</sup>, Mohamed Hafez<sup>1</sup>, Ahmed Y. Radwan<sup>1</sup>, Khalid Elgazzar<sup>2</sup>,
   Kathryn Hume<sup>1</sup><br>
   <sup>1</sup>Vector Institute &nbsp; <sup>2</sup>Ontario Tech University
 </p>
@@ -187,15 +187,14 @@ or audio only, seeds, learning rate, epoch budget and a held-out generator ([`ab
 ## Citation
 
 ```bibtex
-
 @misc{raza2026mozaicaudiovideodeepfakebenchmark,
-      title={MOZAIC: An Audio-Video Deepfake Benchmark for Telling What Is Fake}, 
+      title={MOZAIC: An Audio-Video Deepfake Benchmark for Telling What Is Fake},
       author={Shaina Raza and Mohamed Hafez and Ahmed Y. Radwan and Khalid Elgazzar and Kathryn Hume},
       year={2026},
       eprint={2611.31301},
       archivePrefix={arXiv},
       primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2611.31301}, 
+      url={https://arxiv.org/abs/2611.31301},
 }
 ```
 
